@@ -165,9 +165,9 @@ class _MyHomePageState extends State<_MyHomePage> {
     Map<String, dynamic> djimapString = {
       "Code": "^DJI",
       "Name": "^DJI",
-      "Price": djispanTexts[19],
-      "Reshio": djispanTexts[24],
-      "Percent": djispanTexts[29],
+      "Price": djispanTexts[16],
+      "Reshio": djispanTexts[23],
+      "Percent": djispanTexts[26],
       "Polarity": djipolarity,
       "Banefits": "Unused",
       "Evaluation": "Unused"
@@ -192,9 +192,9 @@ class _MyHomePageState extends State<_MyHomePage> {
     Map<String, dynamic> nkmapString = {
       "Code": "NIKKEI",
       "Name": "NIKKEI",
-      "Price": nkspanTexts[18],
-      "Reshio": nkspanTexts[25],
-      "Percent": nkspanTexts[28],
+      "Price": nkspanTexts[16],
+      "Reshio": nkspanTexts[23],
+      "Percent": nkspanTexts[26],
       "Polarity": nkpolarity,
       "Banefits": "Unused",
       "Evaluation": "Unused"
@@ -225,7 +225,7 @@ class _MyHomePageState extends State<_MyHomePage> {
       int delimiterIndex = ddElements[0].indexOf("(");
       final ddElement = ddElements[0].substring(0, delimiterIndex);
 
-      String anyfirstChar = spanTexts[29].substring(0, 1);
+      String anyfirstChar = spanTexts[28].substring(0, 1);
       String anypolarity = anyfirstChar == '-' ? '-' : '+';
 
       int intHolding = stockdataList[i]["Shares"];
@@ -242,7 +242,7 @@ class _MyHomePageState extends State<_MyHomePage> {
           formatter.format(evaluation); //evaluation.toString();
 
       Map<String, dynamic> mapString = {
-        "Code": spanTexts[24],
+        "Code": spanTexts[22],
         "Name": h1Texts[1],
         "Price": spanTexts[21],
         "Reshio": ddElement, // spanTexts[29],
