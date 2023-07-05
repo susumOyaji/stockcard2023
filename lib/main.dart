@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -55,46 +56,50 @@ class _MyHomePageState extends State<_MyHomePage> {
   ];
   */
 
-  String formatDuration(Duration duration) {
-    String twoDigits(int n) {
-      if (n >= 10) return "$n";
-      return "0$n";
+  String getFormattedOpentime() {
+    String result = "";
+    initializeDateFormatting();
+
+    // 現在の時刻を取得（GMT）
+    DateTime now = DateTime.now().toUtc();
+
+    // タイムゾーンをJSTに変更
+    DateTime jstNow = now.add(const Duration(hours: 9));
+
+    // 日本標準時のフォーマットを設定
+    //var formatter = DateFormat('yyyy-MM-dd HH:mm:ss', 'ja_JP');
+
+    // JSTの時刻をフォーマットして表示
+    //String formattedJST = formatter.format(jstNow);
+    //print('JST: $formattedJST');
+
+    //DateTime now = DateTime.now();
+    // 9:00までの時間差を計算
+    DateTime openTime =
+        DateTime(jstNow.year, jstNow.month, jstNow.day, 9, 0, 0);
+    // 15:00までの時間差を計算
+    DateTime closeTime =
+        DateTime(jstNow.year, jstNow.month, jstNow.day, 15, 0, 0);
+
+    Duration remainingTime = closeTime.difference(jstNow);
+    DateTime tomorrow = now.add(const Duration(days: 1));
+    DateTime tomorrowTargetTime =
+        DateTime(tomorrow.year, tomorrow.month, tomorrow.day, 15, 0, 0);
+
+    Duration remainingTimeTomorrow = tomorrowTargetTime.difference(now);
+
+    if (jstNow.hour < openTime.hour) {
+      result =
+          'The Market Starts in ${remainingTime.inHours}hour and ${remainingTime.inMinutes % 60}minutes more';
+    } else if (jstNow.hour >= openTime.hour && jstNow.hour < closeTime.hour) {
+      result =
+          'The Market Closes in ${remainingTime.inHours}hour ${remainingTime.inMinutes % 60}minutes';
+    } else if (jstNow.hour >= closeTime.hour) {
+      result =
+          'The Market Starts in ${remainingTimeTomorrow.inDays}more day and ${remainingTimeTomorrow.inHours % 24}hour and ${remainingTimeTomorrow.inMinutes % 60}minutes';
     }
 
-    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-    return "${twoDigits(duration.inHours)}:$twoDigitMinutes";
-  }
-
-  String getFormattedOpentime() {
-    DateTime now = DateTime.now();
-    // 13:00までの時間差を計算
-    DateTime targetTime1 = DateTime(now.year, now.month, now.day, 15, 0);
-    Duration timeDiff1 = targetTime1.difference(now);
-
-    // 13:00から明日の9:00までの時間差を計算
-    DateTime nextDay = now.add(Duration(days: 1));
-    DateTime targetTime2 =
-        DateTime(nextDay.year, nextDay.month, nextDay.day, 9, 0);
-    Duration timeDiff2 = targetTime2.difference(targetTime1);
-
-    // 時間差を24時間表記で表示
-    String formattedDiff1 = formatDuration(timeDiff1);
-    String formattedDiff2 = formatDuration(timeDiff2);
-
-    print("現在の時刻から13:00までの時間差: $formattedDiff1");
-    print("13:00から明日の9:00までの時間差: $formattedDiff2");
-
-    String result = timeDiff1 > timeDiff2
-        ? "現在の時刻から15:00までの時間差の方が大きいです"
-        : timeDiff1 < timeDiff2
-            ? "15:00から明日の9:00までの時間差の方が大きいです"
-            : "timeDiff1とtimeDiff2は同じです";
     return result;
-  }
-
-  String getFormattedDate() {
-    DateTime now = DateTime.now();
-    return DateFormat('yyyy-MM-dd').format(now);
   }
 
   double _getContainerWidth(BuildContext context) {
@@ -165,9 +170,9 @@ class _MyHomePageState extends State<_MyHomePage> {
     Map<String, dynamic> djimapString = {
       "Code": "^DJI",
       "Name": "^DJI",
-      "Price": djispanTexts[16],
-      "Reshio": djispanTexts[23],
-      "Percent": djispanTexts[26],
+      "Price": djispanTexts[17],
+      "Reshio": djispanTexts[22],
+      "Percent": djispanTexts[27],
       "Polarity": djipolarity,
       "Banefits": "Unused",
       "Evaluation": "Unused"
@@ -504,17 +509,24 @@ class _MyHomePageState extends State<_MyHomePage> {
   @override
   void initState() {
     super.initState();
-    formattedDate = getFormattedDate();
-    moreHours = getFormattedOpentime();
+
+    //moreHours = getFormattedOpentime();
     //deleteData();
     loadData();
-    returnMap = webfetch();
+    _refreshData();
+
+    Timer.periodic(const Duration(seconds: 300), (Timer timer) {
+      //60秒ごとに呼び出されるメソッド
+      _refreshData();
+     
+    });
   }
 
   void _refreshData() {
     setState(() {
       print("_refreshData");
       returnMap = webfetch();
+      moreHours = getFormattedOpentime();
     });
   }
 
