@@ -7,9 +7,36 @@ import 'dart:async';
 import 'package:html/parser.dart' as parser;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Clipper.dart';
+//import 'package:window_manager/window_manager.dart';
+import 'package:window_size/window_size.dart';
+import 'package:flutter/foundation.dart';
+import 'dart:io';
 
 void main() async {
+  setupWindow(); // サイズを設定
   runApp(const MyApp());
+}
+
+// サイズを固定
+const double windowWidth = 700;
+const double windowHeight = 1000;
+
+// サイズを設定するメソッド
+void setupWindow() {
+  // webとプラットフォームをチェック
+  if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
+    WidgetsFlutterBinding.ensureInitialized();
+    //setWindowTitle('sample');
+    setWindowMinSize(const Size(windowWidth, windowHeight));
+    setWindowMaxSize(const Size(windowWidth, windowHeight));
+    getCurrentScreen().then((screen) {
+      setWindowFrame(Rect.fromCenter(
+        center: screen!.frame.center,
+        width: windowWidth,
+        height: windowHeight,
+      ));
+    });
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -67,10 +94,11 @@ class _MyHomePageState extends State<_MyHomePage> {
     DateTime jstNow = now.add(const Duration(hours: 9));
 
     // 日本標準時のフォーマットを設定
-    //var formatter = DateFormat('yyyy-MM-dd HH:mm:ss', 'ja_JP');
+    var formatter = DateFormat('yyyy-MM-dd', 'ja_JP');
 
     // JSTの時刻をフォーマットして表示
-    //String formattedJST = formatter.format(jstNow);
+    formattedDate = formatter.format(jstNow);
+
     //print('JST: $formattedJST');
 
     //DateTime now = DateTime.now();
@@ -81,22 +109,27 @@ class _MyHomePageState extends State<_MyHomePage> {
     DateTime closeTime =
         DateTime(jstNow.year, jstNow.month, jstNow.day, 15, 0, 0);
 
-    Duration remainingTime = closeTime.difference(jstNow);
-    DateTime tomorrow = now.add(const Duration(days: 1));
-    DateTime tomorrowTargetTime =
-        DateTime(tomorrow.year, tomorrow.month, tomorrow.day, 15, 0, 0);
+    DateTime jstNowTime = DateTime(jstNow.year, jstNow.month, jstNow.day,
+        jstNow.hour, jstNow.minute, jstNow.second);
 
-    Duration remainingTimeTomorrow = tomorrowTargetTime.difference(now);
+    Duration remainingOpenTime = openTime.difference(jstNowTime);
+    Duration remainingTime = closeTime.difference(jstNowTime);
+
+    DateTime tomorrow = jstNow.add(const Duration(days: 1));
+    DateTime tomorrowTargetTime =
+        DateTime(tomorrow.year, tomorrow.month, tomorrow.day, 9, 0, 0);
+
+    Duration remainingTimeTomorrow = tomorrowTargetTime.difference(jstNowTime);
 
     if (jstNow.hour < openTime.hour) {
       result =
-          'The Market Starts in ${remainingTime.inHours}hour and ${remainingTime.inMinutes % 60}minutes more';
+          'The todayMarket Starts in ${remainingOpenTime.inHours % 24}hour and ${remainingOpenTime.inMinutes % 60}minutes more';
     } else if (jstNow.hour >= openTime.hour && jstNow.hour < closeTime.hour) {
       result =
           'The Market Closes in ${remainingTime.inHours}hour ${remainingTime.inMinutes % 60}minutes';
     } else if (jstNow.hour >= closeTime.hour) {
       result =
-          'The Market Starts in ${remainingTimeTomorrow.inDays}more day and ${remainingTimeTomorrow.inHours % 24}hour and ${remainingTimeTomorrow.inMinutes % 60}minutes';
+          'The tomorrowMarket Starts in ${remainingTimeTomorrow.inHours % 24}hour and ${remainingTimeTomorrow.inMinutes % 60}minutes';
     }
 
     return result;
@@ -515,10 +548,9 @@ class _MyHomePageState extends State<_MyHomePage> {
     loadData();
     _refreshData();
 
-    Timer.periodic(const Duration(seconds: 300), (Timer timer) {
+    Timer.periodic(const Duration(seconds: 60), (Timer timer) {
       //60秒ごとに呼び出されるメソッド
       _refreshData();
-     
     });
   }
 
@@ -528,6 +560,65 @@ class _MyHomePageState extends State<_MyHomePage> {
       returnMap = webfetch();
       moreHours = getFormattedOpentime();
     });
+  }
+
+  double _selectedValue = 0.0;
+  Widget timesetup1() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Slider(
+          value: _selectedValue,
+          min: 0.0,
+          max: 100.0,
+          onChanged: (value) {
+            setState(() {
+              _selectedValue = value;
+              Timer.periodic(Duration(seconds: value.toInt()), (Timer timer) {
+                //60秒ごとに呼び出されるメソッド
+                _refreshData();
+              });
+            });
+          },
+        ),
+        Text('Selected Number: $_selectedValue'),
+      ],
+    );
+  }
+
+  void timesetup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Number Input Dialog'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Slider(
+                value: _selectedValue,
+                min: 0.0,
+                max: 100.0,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedValue = value;
+                  });
+                },
+              ),
+              Text('Selected Number: $_selectedValue'),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Container stackmarketView(stdstock) => Container(
@@ -685,140 +776,266 @@ class _MyHomePageState extends State<_MyHomePage> {
       ]));
 
   Container stackAssetView(asset) => Container(
-      padding: const EdgeInsets.only(top: 5.0),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Colors.black,
-            Colors.grey.shade800,
-          ],
+        padding: const EdgeInsets.only(top: 5.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.black,
+              Colors.grey.shade800,
+            ],
+          ),
+          borderRadius: BorderRadius.circular(10),
+          color: const Color.fromARGB(255, 56, 50, 50),
         ),
-        borderRadius: BorderRadius.circular(10),
-        color: const Color.fromARGB(255, 56, 50, 50),
-      ),
-      child: Row(children: [
-        const Icon(
-          Icons.currency_yen,
-          size: 42,
-          color: Colors.grey,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Stack(
+          // Stackを追加
+          alignment: Alignment.centerLeft, // 子要素の配置を左揃えに設定
           children: [
-            const Text.rich(
-              TextSpan(
-                text: 'Market capitalization',
-                style: TextStyle(
-                  fontSize: 35.0,
+            Row(
+              children: [
+                const Icon(
+                  Icons.currency_yen,
+                  size: 42,
                   color: Colors.grey,
-                  fontFamily: 'NotoSansJP',
-                  fontWeight: FontWeight.w900,
                 ),
+                Column(
+                  //crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text.rich(
+                      TextSpan(
+                        text: 'Market capitalization',
+                        style: TextStyle(
+                          fontSize: 35.0,
+                          color: Colors.grey,
+                          fontFamily: 'NotoSansJP',
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: <Widget>[
+                        CircleAvatar(
+                          maxRadius: 5.0,
+                          backgroundColor: asset["Polarity"] == "+"
+                              ? Colors.orange
+                              : Colors.green,
+                        ),
+                        const Text(
+                          "Market price: ",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.white,
+                            fontFamily: 'NotoSansJP',
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: '${asset["Market"]}',
+                                style: TextStyle(
+                                  fontSize: 24.0,
+                                  color: asset["Polarity"] == "+"
+                                      ? Colors.orange
+                                      : Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        const SizedBox(width: 10),
+                        const Text(
+                          "Profit(Gains)",
+                          style: TextStyle(fontSize: 15.0, color: Colors.white),
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              const TextSpan(
+                                text: "￥",
+                                style: TextStyle(
+                                    fontSize: 15.0, color: Colors.white),
+                              ),
+                              TextSpan(
+                                text: '${asset["Profit"]}',
+                                style: const TextStyle(
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        const Text(
+                          "Investment",
+                          style: TextStyle(fontSize: 15.0, color: Colors.white),
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              const TextSpan(
+                                text: "￥",
+                                style: TextStyle(
+                                    fontSize: 15.0, color: Colors.white),
+                              ),
+                              TextSpan(
+                                text: '${asset["Invest"]}',
+                                style: const TextStyle(
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Positioned(
+              right: 18.0,
+              top: 10.0,
+              child: IconButton(
+                icon: const Icon(Icons.grain),
+                color: Colors.blueGrey,
+                iconSize: 40,
+                onPressed: () {
+                  handleButtonLongPress();
+                },
               ),
             ),
-            Row(
-              children: <Widget>[
-                CircleAvatar(
-                  maxRadius: 5.0,
-                  backgroundColor: asset["Polarity"] == "+"
-                      ? Colors.orange
-                      : Colors.green, //Colors.green,
-                ),
-                const Text(
-                  "Market price: ", //"Gain or loss",
+          ],
+        ),
+      );
+
+  Container stackAssetView1(asset) => Container(
+        padding: const EdgeInsets.only(top: 5.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.black,
+              Colors.grey.shade800,
+            ],
+          ),
+          borderRadius: BorderRadius.circular(10),
+          color: const Color.fromARGB(255, 56, 50, 50),
+        ),
+        child: Row(children: [
+          const Icon(
+            Icons.currency_yen,
+            size: 42,
+            color: Colors.grey,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text.rich(
+                TextSpan(
+                  text: 'Market capitalization',
                   style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.white,
+                    fontSize: 35.0,
+                    color: Colors.grey,
                     fontFamily: 'NotoSansJP',
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: '${asset["Market"]}',
-                        style: TextStyle(
-                          fontSize: 24.0,
-                          color: asset["Polarity"] == "+"
-                              ? Colors.orange
-                              : Colors.green,
-                          fontWeight: FontWeight.bold,
+              ),
+              Row(
+                children: <Widget>[
+                  CircleAvatar(
+                    maxRadius: 5.0,
+                    backgroundColor: asset["Polarity"] == "+"
+                        ? Colors.orange
+                        : Colors.green, //Colors.green,
+                  ),
+                  const Text(
+                    "Market price: ", //"Gain or loss",
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.white,
+                      fontFamily: 'NotoSansJP',
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: '${asset["Market"]}',
+                          style: TextStyle(
+                            fontSize: 24.0,
+                            color: asset["Polarity"] == "+"
+                                ? Colors.orange
+                                : Colors.green,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                const SizedBox(width: 10),
-                const Text(
-                  "Profit(Gains)", //"Gain or loss", //"Market price",
-                  style: TextStyle(fontSize: 15.0, color: Colors.white),
-                ),
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      const TextSpan(
-                        text: "￥",
-                        style: TextStyle(fontSize: 15.0, color: Colors.white),
-                      ),
-                      TextSpan(
-                        text: '${asset["Profit"]}',
-                        style: const TextStyle(
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      ),
-                    ],
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  const SizedBox(width: 10),
+                  const Text(
+                    "Profit(Gains)", //"Gain or loss", //"Market price",
+                    style: TextStyle(fontSize: 15.0, color: Colors.white),
                   ),
-                ),
-                const SizedBox(width: 10),
-                const Text(
-                  "Investment",
-                  style: TextStyle(fontSize: 15.0, color: Colors.white),
-                ),
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      const TextSpan(
-                        text: "￥",
-                        style: TextStyle(fontSize: 15.0, color: Colors.white),
-                      ),
-                      TextSpan(
-                        text: '${asset["Invest"]}',
-                        style: const TextStyle(
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      ),
-                    ],
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        const TextSpan(
+                          text: "￥",
+                          style: TextStyle(fontSize: 15.0, color: Colors.white),
+                        ),
+                        TextSpan(
+                          text: '${asset["Profit"]}',
+                          style: const TextStyle(
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ]));
-
-  Container status() => Container(
-      padding: const EdgeInsets.only(top: 5.0),
-      color: const Color.fromARGB(255, 1, 39, 3),
-      child: const Row(children: [
-        Icon(
-          Icons.currency_yen,
-          size: 10,
-          color: Colors.grey,
-        ),
-        Text("Msg.............",
-            style: TextStyle(
-              fontSize: 15.0,
-              color: Colors.yellow,
-              fontFamily: 'NotoSansJP',
-            )),
-      ]));
+                  const SizedBox(width: 10),
+                  const Text(
+                    "Investment",
+                    style: TextStyle(fontSize: 15.0, color: Colors.white),
+                  ),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        const TextSpan(
+                          text: "￥",
+                          style: TextStyle(fontSize: 15.0, color: Colors.white),
+                        ),
+                        TextSpan(
+                          text: '${asset["Invest"]}',
+                          style: const TextStyle(
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ]),
+      );
 
   ListView listView(dynamic anystock) => ListView.builder(
       scrollDirection: Axis.vertical,
@@ -971,182 +1188,205 @@ class _MyHomePageState extends State<_MyHomePage> {
             var stdstock = stockDataList;
             var anystock = stockDataList.sublist(2);
             var asset = getAsset(anystock);
-            return Column(
-              children: <Widget>[
+            return //Column(
+                //children: <Widget>[
                 Container(
-                  //width: 280,
-                  margin: const EdgeInsets.all(0.0),
-                  width: _getContainerWidth(context),
-                  padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                  child: Stack(
-                    children: [
-                      Container(
-                          padding: const EdgeInsets.all(10),
-                          width: MediaQuery.of(context).size.width,
-                          color: Colors.black,
-                          child: SafeArea(
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  GestureDetector(
-                                    child: ClipPath(
-                                      clipper: MyCustomClipper(),
-                                      child: Container(
-                                          //margin: EdgeInsets.only(top: 0.0, right: 0.0),
-                                          padding: const EdgeInsets.only(
-                                              top: 0.0,
-                                              left: 20.0,
-                                              right: 0.0,
-                                              bottom: 10.0),
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              colors: [
-                                                Colors.white,
-                                                Colors.grey.shade800,
-                                              ],
-                                            ),
-                                            borderRadius:
-                                                const BorderRadius.only(
-                                              topRight: Radius.circular(10),
-                                              bottomRight: Radius.circular(10),
-                                            ),
-                                          ),
-                                          child: const Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: <Widget>[
-                                              Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    "Stocks",
-                                                    style: TextStyle(
-                                                      fontSize: 30.0,
-                                                      color: Colors.orange,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ],
+              //width: 280,
+              margin: const EdgeInsets.all(0.0),
+              width: _getContainerWidth(context),
+              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+              child: Stack(
+                children: [
+                  Container(
+                      padding: const EdgeInsets.all(10),
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.black,
+                      child: SafeArea(
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              //GestureDetector(
+                              ClipPath(
+                                clipper: MyCustomClipper(),
+                                child: Container(
+                                    //margin: EdgeInsets.only(top: 0.0, right: 0.0),
+                                    padding: const EdgeInsets.only(
+                                        top: 0.0,
+                                        left: 20.0,
+                                        right: 0.0,
+                                        bottom: 10.0),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.white,
+                                          Colors.grey.shade800,
+                                        ],
+                                      ),
+                                      borderRadius: const BorderRadius.only(
+                                        topRight: Radius.circular(10),
+                                        bottomRight: Radius.circular(10),
+                                      ),
+                                    ),
+                                    child: const Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "Stocks",
+                                              style: TextStyle(
+                                                fontSize: 30.0,
+                                                color: Colors.orange,
+                                                fontWeight: FontWeight.bold,
                                               ),
-                                            ],
-                                          )),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: stdmargin,
-                                    //width: 500,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Colors.black,
-                                    ),
-                                    child: stackmarketView(stdstock),
-                                  ),
-                                  Container(
-                                    margin: stdmargin,
-                                    //width: 500,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Colors.black,
-                                    ),
-                                    child: stackAssetView(asset),
-                                  ),
-                                  Container(
-                                      margin: const EdgeInsets.only(
-                                          top: 10.0, right: 0.0, bottom: 0.0),
-                                      padding: const EdgeInsets.all(5.0),
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            Colors.black,
-                                            Colors.grey.shade800,
+                                            ),
                                           ],
                                         ),
-                                        borderRadius: const BorderRadius.only(
-                                          topRight: Radius.circular(10),
-                                          bottomRight: Radius.circular(10),
+                                      ],
+                                    )),
+                              ),
+                              //),
+                              Container(
+                                margin: stdmargin,
+                                //width: 500,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.black,
+                                ),
+                                child: stackmarketView(stdstock),
+                              ),
+                              Container(
+                                margin: stdmargin,
+                                //width: 500,
+                                height: 110,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.black,
+                                ),
+                                child: stackAssetView(asset),
+                              ),
+                              Container(
+                                  margin: const EdgeInsets.only(
+                                      top: 10.0, right: 0.0, bottom: 0.0),
+                                  padding: const EdgeInsets.all(5.0),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Colors.black,
+                                        Colors.grey.shade800,
+                                      ],
+                                    ),
+                                    borderRadius: const BorderRadius.only(
+                                      topRight: Radius.circular(10),
+                                      bottomRight: Radius.circular(10),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.max,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Please Watch to Comments: $moreHours",
+                                        style: const TextStyle(
+                                          fontSize: 15.0,
+                                          fontFamily: 'NotoSansJP',
+                                          //fontWeight: FontWeight.w900,
+                                          color: Colors.yellowAccent,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.max,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "${moreHours}",
-                                            style: const TextStyle(
-                                              fontSize: 18.0,
-                                              fontFamily: 'NotoSansJP',
-                                              //fontWeight: FontWeight.w900,
-                                              color: Colors.yellowAccent,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      )),
-                                  Container(
-                                    margin: stdmargin,
-                                    //width: 500,
-                                    height: 300,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Colors.black,
+                                    ],
+                                  )),
+                              Container(
+                                margin: stdmargin,
+                                //width: 500,
+                                height: 300,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.black,
+                                ),
+                                child: listView(anystock),
+                              ),
+                            ]),
+                      )),
+                  Positioned(
+                    right: 100.0,
+                    top: 20.0,
+                    child: Text(
+                        "  $formattedDate" /*+ '  ' + now.month.toString()*/,
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold)),
+                  ),
+                  Positioned(
+                    right: 5.0,
+                    top: 12.0,
+                    child: GestureDetector(
+                      child: ClipOval(
+                        child: Material(
+                          color: Colors.orange, // button color
+                          child: InkWell(
+                            splashColor: Colors.red, // inkwell color
+                            child: const SizedBox(
+                                width: 45,
+                                height: 45,
+                                child: Icon(Icons.autorenew)),
+                            onTap: () {
+                              _refreshData();
+                            },
+                            
+                            onLongPress: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('Number Input Dialog'),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Slider(
+                                          value: _selectedValue,
+                                          min: 0.0,
+                                          max: 100.0,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _selectedValue = value;
+                                            });
+                                          },
+                                        ),
+                                        Text(
+                                            'Selected Number: $_selectedValue'),
+                                      ],
                                     ),
-                                    child: listView(anystock),
-                                  ),
-                                ]),
-                          )),
-                      Positioned(
-                        right: 150.0,
-                        top: 45.0,
-                        child: Text(
-                            "Today's date: $formattedDate" /*+ '  ' + now.month.toString()*/,
-                            style: const TextStyle(
-                                color: Colors.yellow,
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold)),
-                      ),
-                      Positioned(
-                        right: 5.0,
-                        top: 34.0,
-                        child: ClipOval(
-                          child: Material(
-                            color: Colors.orange, // button color
-                            child: InkWell(
-                              splashColor: Colors.red, // inkwell color
-                              child: const SizedBox(
-                                  width: 45,
-                                  height: 45,
-                                  child: Icon(Icons.autorenew)),
-                              onTap: () {
-                                _refreshData();
-                              },
-                            ),
+                                    actions: [
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('Close'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
                           ),
                         ),
                       ),
-                      Positioned(
-                        right: 18.0,
-                        bottom: 330.0,
-                        child: IconButton(
-                          icon: const Icon(Icons.grain),
-                          color: Colors.blueGrey,
-                          iconSize: 40,
-                          onPressed: () {
-                            handleButtonLongPress();
-                          },
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             );
+            //],
+            //);
           },
         ),
       ),

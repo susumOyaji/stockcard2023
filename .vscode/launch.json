@@ -5,6 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Dart: Debug Current File",
+            "request": "launch",
+            "type": "dart",
+            "program": "${file}"
+        },
+        {
             "name": "stockcard2023",
             "request": "launch",
             "type": "dart"
