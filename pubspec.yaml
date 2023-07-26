@@ -33,7 +33,7 @@ dependencies:
   intl: ^0.18.1  
   http: ^0.13.5
   html: ^0.15.0
-  shared_preferences: ^2.0.10
+  shared_preferences: 2.0.15
   # 以下の記述を追加する。
   window_size:
     git:
