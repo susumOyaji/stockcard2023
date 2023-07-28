@@ -75,6 +75,16 @@ class _MyHomePageState extends State<_MyHomePage> {
   final TextEditingController _textEditingController = TextEditingController();
   final TextEditingController _textEditingController2 = TextEditingController();
   final TextEditingController _textEditingController3 = TextEditingController();
+
+  String _selectedItem = 'Option 1';
+  List<String> _items = [
+    'Option 1',
+    'Option 2',
+    'Option 3',
+    'Option 4',
+    'Option 5'
+  ];
+
   /*
   static List<Map<String, dynamic>> stockdata = [
     {"Code": "6758", "Shares": 200, "Unitprice": 1665},
@@ -563,7 +573,7 @@ class _MyHomePageState extends State<_MyHomePage> {
   }
 
   double _selectedValue = 0.0;
-  Widget timesetup1() {
+  Widget timesetup() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -586,7 +596,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     );
   }
 
-  void timesetup(BuildContext context) {
+  void timesetup1(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -614,6 +624,48 @@ class _MyHomePageState extends State<_MyHomePage> {
                 Navigator.of(context).pop();
               },
               child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  String? isSelectedItem = 'aaa';
+  double _sliderValue = 0.0;
+
+  void _showDropdownList(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Slider Dialog'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Slider(
+                value: _sliderValue,
+                min: 0.0,
+                max: 100.0,
+                onChanged: (newValue) {
+                  setState(() {
+                    _sliderValue = newValue;
+                  });
+                },
+              ),
+              SizedBox(height: 16.0),
+              Text(
+                'Selected Value: $_sliderValue',
+                style: TextStyle(fontSize: 20.0),
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
             ),
           ],
         );
@@ -1341,41 +1393,32 @@ class _MyHomePageState extends State<_MyHomePage> {
                             onTap: () {
                               _refreshData();
                             },
-                            
+
                             onLongPress: () {
+                              //_showDropdownList(context);
+                              //void _showDropdownList(BuildContext context) {
                               showDialog(
                                 context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text('Number Input Dialog'),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Slider(
-                                          value: _selectedValue,
-                                          min: 0.0,
-                                          max: 100.0,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _selectedValue = value;
-                                            });
-                                          },
-                                        ),
-                                        Text(
-                                            'Selected Number: $_selectedValue'),
-                                      ],
-                                    ),
-                                    actions: [
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text('Close'),
+                                builder: (context) {
+                                  return SimpleDialog(
+                                    title: Text("Ref-Time-Setup"),
+                                    children: <Widget>[
+                                      // コンテンツ領域
+                                      SimpleDialogOption(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: Text("１S"),
+
+                                      ),
+                                      SimpleDialogOption(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: Text("10S"),
+                                        
                                       ),
                                     ],
                                   );
                                 },
                               );
+                              // }
                             },
                           ),
                         ),

@@ -28,7 +28,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   DateTime? _chosenDateTime;
-  DateTime selectedTime = DateTime.now();
 
   // Show the modal that contains the CupertinoDatePicker
   void _showDatePicker(ctx) {
@@ -42,18 +41,38 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   SizedBox(
                     height: 400,
-                    child: CupertinoDatePicker(
-                        mode: CupertinoDatePickerMode.time,
-                        use24hFormat: true, // 12時間表記を設定
-                        initialDateTime: DateTime.now(),
-                        minimumDate: DateTime(DateTime.now().year, 1, 1, 8, 0), // 最小時刻を8:00に設定
-                        maximumDate:
-                            DateTime(2023, 1, 1, 8, 10), // 表示する最大の時間を設定
-                        onDateTimeChanged: (val) {
-                          setState(() {
-                            _chosenDateTime = val;
-                          });
-                        }),
+                    child: CupertinoPicker(
+                      itemExtent: 32.0, // 各アイテムの高さ
+                      onSelectedItemChanged: (index) {
+                        // 選択された分や秒が変更されたときの処理
+                        // indexには選択されたアイテムのインデックスが格納されています
+                      },
+                      children: [
+                        // 分の選択肢（0から59まで）
+                        for (var minute = 0; minute < 10; minute++)
+                          Center(
+                            child: Text(
+                              '$minute',
+                              style: TextStyle(fontSize: 20.0),
+                            ),
+                          ),
+                        // セパレータ（:）
+                        const Center(
+                          child: Text(
+                            ':',
+                            style: TextStyle(fontSize: 20.0),
+                          ),
+                        ),
+                        // 秒の選択肢（0から59まで）
+                        for (var second = 0; second < 60; second++)
+                          Center(
+                            child: Text(
+                              '$second',
+                              style: const TextStyle(fontSize: 20.0),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
 
                   // Close the modal
