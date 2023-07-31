@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
                   print("pressed");
                 },
                 mini: true, // 小さいサイズのFloatingActionButtonを表示
-                chil:icon(add)''
+              
               ),
               Container(
                 // 余白のためContainerでラップ

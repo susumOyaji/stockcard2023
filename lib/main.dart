@@ -1407,12 +1407,10 @@ class _MyHomePageState extends State<_MyHomePage> {
                                       SimpleDialogOption(
                                         onPressed: () => Navigator.pop(context),
                                         child: Text("１S"),
-
                                       ),
                                       SimpleDialogOption(
                                         onPressed: () => Navigator.pop(context),
                                         child: Text("10S"),
-                                        
                                       ),
                                     ],
                                   );
