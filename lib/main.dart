@@ -76,14 +76,7 @@ class _MyHomePageState extends State<_MyHomePage> {
   final TextEditingController _textEditingController2 = TextEditingController();
   final TextEditingController _textEditingController3 = TextEditingController();
 
-  String _selectedItem = 'Option 1';
-  List<String> _items = [
-    'Option 1',
-    'Option 2',
-    'Option 3',
-    'Option 4',
-    'Option 5'
-  ];
+  bool _isMenuOpen = false;
 
   /*
   static List<Map<String, dynamic>> stockdata = [
@@ -549,6 +542,8 @@ class _MyHomePageState extends State<_MyHomePage> {
     await prefs.remove('stockdataList');
   }
 
+  int _refreshTime = 60;
+  Timer? _refreshTimer;
   @override
   void initState() {
     super.initState();
@@ -558,8 +553,24 @@ class _MyHomePageState extends State<_MyHomePage> {
     loadData();
     _refreshData();
 
-    Timer.periodic(const Duration(seconds: 60), (Timer timer) {
-      //60秒ごとに呼び出されるメソッド
+    _refreshSetup(_refreshTime);
+    //Timer.periodic(Duration(seconds: _refreshTime), (Timer timer) {
+    //60秒ごとに呼び出されるメソッド
+    //  _refreshData();
+    //});
+  }
+
+  void _refreshSetup(int time) {
+    // タイマーをキャンセルしてリフレッシュを停止
+    _refreshTimer?.cancel();
+    setState(() {
+      _refreshTime = time;
+      print("_refreshSetup$time");
+    });
+    _refreshTimer =
+        Timer.periodic(Duration(seconds: _refreshTime), (Timer timer) {
+      //time秒ごとに呼び出されるメソッド
+
       _refreshData();
     });
   }
@@ -572,105 +583,11 @@ class _MyHomePageState extends State<_MyHomePage> {
     });
   }
 
-  double _selectedValue = 0.0;
-  Widget timesetup() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Slider(
-          value: _selectedValue,
-          min: 0.0,
-          max: 100.0,
-          onChanged: (value) {
-            setState(() {
-              _selectedValue = value;
-              Timer.periodic(Duration(seconds: value.toInt()), (Timer timer) {
-                //60秒ごとに呼び出されるメソッド
-                _refreshData();
-              });
-            });
-          },
-        ),
-        Text('Selected Number: $_selectedValue'),
-      ],
-    );
-  }
-
-  void timesetup1(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Number Input Dialog'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Slider(
-                value: _selectedValue,
-                min: 0.0,
-                max: 100.0,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedValue = value;
-                  });
-                },
-              ),
-              Text('Selected Number: $_selectedValue'),
-            ],
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  String? isSelectedItem = 'aaa';
-  double _sliderValue = 0.0;
-
-  void _showDropdownList(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Slider Dialog'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Slider(
-                value: _sliderValue,
-                min: 0.0,
-                max: 100.0,
-                onChanged: (newValue) {
-                  setState(() {
-                    _sliderValue = newValue;
-                  });
-                },
-              ),
-              SizedBox(height: 16.0),
-              Text(
-                'Selected Value: $_sliderValue',
-                style: TextStyle(fontSize: 20.0),
-              ),
-            ],
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
+  void _toggleMenu() {
+    setState(() {
+      _isMenuOpen = !_isMenuOpen;
+    });
+    print("isMenuOpen:  $_isMenuOpen");
   }
 
   Container stackmarketView(stdstock) => Container(
@@ -1221,6 +1138,91 @@ class _MyHomePageState extends State<_MyHomePage> {
         );
       });
 
+  Widget _buildFloatingActionButton() {
+    return Positioned(
+      top: 13.0, // 下からの距離を調整
+      right: 6.0, // 右からの距離を調整
+      child: Column(
+        verticalDirection: VerticalDirection.down,
+        //mainAxisSize: MainAxisSize.min,
+        children: [
+          if (_isMenuOpen) ...[
+            FloatingActionButton(
+              onPressed: () {
+                _toggleMenu();
+                _refreshSetup(1);
+              },
+              mini: true,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5), // 角丸の半径を指定
+              ),
+              child: const Text("1Sec"), //Icon(Icons.add),
+            ),
+          ],
+          if (_isMenuOpen) ...[
+            FloatingActionButton(
+              onPressed: () {
+                _toggleMenu();
+                _refreshSetup(10);
+              },
+              mini: true,
+              child: const Text("10S"), //Icon(Icons.edit),
+            ),
+            //SizedBox(height: 16.0),
+            FloatingActionButton(
+              onPressed: () {
+                _toggleMenu();
+                _refreshSetup(60);
+              },
+              mini: true,
+              child: const Text("60S"), //Icon(Icons.delete),
+            ),
+            //SizedBox(height: 16.0),
+            FloatingActionButton(
+              onPressed: () {
+                _toggleMenu();
+                setState(() {
+                  _refreshTime = 300;
+                });
+              },
+              mini: true,
+              child: const Text("5M"), //Icon(Icons.share),
+            ),
+            FloatingActionButton(
+              onPressed: () {
+                _toggleMenu();
+                setState(() {
+                  _refreshTime = 3600;
+                });
+              },
+              mini: true,
+              child: const Text("10M"), //Icon(Icons.close),
+            ),
+          ],
+          Tooltip(
+            message: _refreshTime.toString(),
+            child: ClipOval(
+              child: Material(
+                color: Colors.orange, // button color
+                child: InkWell(
+                  splashColor: Colors.red, // inkwell color
+                  child: const SizedBox(
+                      width: 45, height: 45, child: Icon(Icons.autorenew)),
+                  onTap: () {
+                    _refreshData();
+                  },
+                  onLongPress: () {
+                    _toggleMenu();
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1377,57 +1379,10 @@ class _MyHomePageState extends State<_MyHomePage> {
                             fontSize: 25,
                             fontWeight: FontWeight.bold)),
                   ),
-                  Positioned(
-                    right: 5.0,
-                    top: 12.0,
-                    child: GestureDetector(
-                      child: ClipOval(
-                        child: Material(
-                          color: Colors.orange, // button color
-                          child: InkWell(
-                            splashColor: Colors.red, // inkwell color
-                            child: const SizedBox(
-                                width: 45,
-                                height: 45,
-                                child: Icon(Icons.autorenew)),
-                            onTap: () {
-                              _refreshData();
-                            },
-
-                            onLongPress: () {
-                              //_showDropdownList(context);
-                              //void _showDropdownList(BuildContext context) {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return SimpleDialog(
-                                    title: Text("Ref-Time-Setup"),
-                                    children: <Widget>[
-                                      // コンテンツ領域
-                                      SimpleDialogOption(
-                                        onPressed: () => Navigator.pop(context),
-                                        child: Text("１S"),
-                                      ),
-                                      SimpleDialogOption(
-                                        onPressed: () => Navigator.pop(context),
-                                        child: Text("10S"),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                              // }
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  _buildFloatingActionButton(),
                 ],
               ),
             );
-            //],
-            //);
           },
         ),
       ),
