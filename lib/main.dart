@@ -871,8 +871,8 @@ class _MyHomePageState extends State<_MyHomePage> {
               ],
             ),
             Positioned(
-              right: 18.0,
-              top: 10.0,
+              right: 0.0,
+              top: 0.0,
               child: IconButton(
                 icon: const Icon(Icons.grain),
                 color: Colors.blueGrey,
@@ -1147,56 +1147,113 @@ class _MyHomePageState extends State<_MyHomePage> {
         //mainAxisSize: MainAxisSize.min,
         children: [
           if (_isMenuOpen) ...[
-            FloatingActionButton(
-              onPressed: () {
+            InkWell(
+              onTap: () {
+                print('ClipOval tapped!');
                 _toggleMenu();
                 _refreshSetup(1);
               },
-              mini: true,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5), // 角丸の半径を指定
+              child: ClipOval(
+                child: Container(
+                  width: 45,
+                  height: 45,
+                  color: Colors.grey,
+                  child: const Center(
+                    child: Text(
+                      '1s',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              child: const Text("1Sec"), //Icon(Icons.add),
             ),
           ],
           if (_isMenuOpen) ...[
-            FloatingActionButton(
-              onPressed: () {
-                _toggleMenu();
-                _refreshSetup(10);
-              },
-              mini: true,
-              child: const Text("10S"), //Icon(Icons.edit),
+            ClipOval(
+              child: Material(
+                color: Colors.grey, // button color
+                child: InkWell(
+                  splashColor: Colors.red, // inkwell color
+                  child: const SizedBox(
+                      width: 45, height: 45, child: Icon(Icons.timer_10_sharp)),
+                  onTap: () {
+                    _toggleMenu();
+                    _refreshSetup(10);
+                  },
+                ),
+              ),
             ),
-            //SizedBox(height: 16.0),
-            FloatingActionButton(
-              onPressed: () {
+            InkWell(
+              onTap: () {
+                print('ClipOval tapped!');
                 _toggleMenu();
                 _refreshSetup(60);
               },
-              mini: true,
-              child: const Text("60S"), //Icon(Icons.delete),
+              child: ClipOval(
+                child: Container(
+                  width: 45,
+                  height: 45,
+                  color: Colors.grey,
+                  child: const Center(
+                    child: Text(
+                      '60s',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
-            //SizedBox(height: 16.0),
-            FloatingActionButton(
-              onPressed: () {
+            InkWell(
+              onTap: () {
+                print('ClipOval tapped!');
                 _toggleMenu();
-                setState(() {
-                  _refreshTime = 300;
-                });
+                _refreshSetup(300);
               },
-              mini: true,
-              child: const Text("5M"), //Icon(Icons.share),
+              child: ClipOval(
+                child: Container(
+                  width: 45,
+                  height: 45,
+                  color: Colors.grey,
+                  child: const Center(
+                    child: Text(
+                      '5m',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
-            FloatingActionButton(
-              onPressed: () {
+            InkWell(
+              onTap: () {
+                print('ClipOval tapped!');
                 _toggleMenu();
-                setState(() {
-                  _refreshTime = 3600;
-                });
+                _refreshSetup(3600);
               },
-              mini: true,
-              child: const Text("10M"), //Icon(Icons.close),
+              child: ClipOval(
+                child: Container(
+                  width: 45,
+                  height: 45,
+                  color: Colors.grey,
+                  child: const Center(
+                    child: Text(
+                      '10m',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
           Tooltip(
