@@ -7,7 +7,7 @@ import 'dart:async';
 import 'package:html/parser.dart' as parser;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Clipper.dart';
-//import 'package:window_manager/window_manager.dart';
+
 import 'package:window_size/window_size.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
@@ -77,6 +77,9 @@ class _MyHomePageState extends State<_MyHomePage> {
   final TextEditingController _textEditingController3 = TextEditingController();
 
   bool _isMenuOpen = false;
+  int _refreshTime = 60;
+  String _refreshTimeString = ""; //_refreshTime.toString();
+  Timer? _refreshTimer;
 
   /*
   static List<Map<String, dynamic>> stockdata = [
@@ -127,12 +130,22 @@ class _MyHomePageState extends State<_MyHomePage> {
     if (jstNow.hour < openTime.hour) {
       result =
           'The todayMarket Starts in ${remainingOpenTime.inHours % 24}hour and ${remainingOpenTime.inMinutes % 60}minutes more';
+      setState(() {
+        // タイマーをキャンセルしてリフレッシュを停止
+        _refreshTimer?.cancel();
+        _refreshTimeString = "The timer is currently stopped as the market for today has not started yet.";
+      });
     } else if (jstNow.hour >= openTime.hour && jstNow.hour < closeTime.hour) {
       result =
           'The Market Closes in ${remainingTime.inHours}hour ${remainingTime.inMinutes % 60}minutes';
     } else if (jstNow.hour >= closeTime.hour) {
       result =
           'The tomorrowMarket Starts in ${remainingTimeTomorrow.inHours % 24}hour and ${remainingTimeTomorrow.inMinutes % 60}minutes';
+      setState(() {
+        // タイマーをキャンセルしてリフレッシュを停止
+        _refreshTimer?.cancel();
+        _refreshTimeString = "The timer is currently stopped as the market for today is closed.";
+      });
     }
 
     return result;
@@ -542,8 +555,6 @@ class _MyHomePageState extends State<_MyHomePage> {
     await prefs.remove('stockdataList');
   }
 
-  int _refreshTime = 60;
-  Timer? _refreshTimer;
   @override
   void initState() {
     super.initState();
@@ -551,13 +562,13 @@ class _MyHomePageState extends State<_MyHomePage> {
     //moreHours = getFormattedOpentime();
     //deleteData();
     loadData();
-    _refreshData();
 
     _refreshSetup(_refreshTime);
     //Timer.periodic(Duration(seconds: _refreshTime), (Timer timer) {
     //60秒ごとに呼び出されるメソッド
     //  _refreshData();
     //});
+    _refreshData();
   }
 
   void _refreshSetup(int time) {
@@ -565,6 +576,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     _refreshTimer?.cancel();
     setState(() {
       _refreshTime = time;
+      _refreshTimeString = _refreshTime.toString();
       print("_refreshSetup$time");
     });
     _refreshTimer =
@@ -1155,8 +1167,8 @@ class _MyHomePageState extends State<_MyHomePage> {
               },
               child: ClipOval(
                 child: Container(
-                  width: 45,
-                  height: 45,
+                  width: 44,
+                  height: 44,
                   color: Colors.grey,
                   child: const Center(
                     child: Text(
@@ -1257,7 +1269,7 @@ class _MyHomePageState extends State<_MyHomePage> {
             ),
           ],
           Tooltip(
-            message: _refreshTime.toString(),
+            message: _refreshTimeString,
             child: ClipOval(
               child: Material(
                 color: Colors.orange, // button color
