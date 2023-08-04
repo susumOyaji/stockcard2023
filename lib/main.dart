@@ -4,6 +4,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
+//import 'dart:html';
 import 'package:html/parser.dart' as parser;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Clipper.dart';
@@ -133,7 +134,8 @@ class _MyHomePageState extends State<_MyHomePage> {
       setState(() {
         // タイマーをキャンセルしてリフレッシュを停止
         _refreshTimer?.cancel();
-        _refreshTimeString = "The timer is currently stopped as the market for today has not started yet.";
+        _refreshTimeString =
+            "The timer is currently stopped as the market for today has not started yet.";
       });
     } else if (jstNow.hour >= openTime.hour && jstNow.hour < closeTime.hour) {
       result =
@@ -144,7 +146,8 @@ class _MyHomePageState extends State<_MyHomePage> {
       setState(() {
         // タイマーをキャンセルしてリフレッシュを停止
         _refreshTimer?.cancel();
-        _refreshTimeString = "The timer is currently stopped as the market for today is closed.";
+        _refreshTimeString =
+            "The timer is currently stopped as the market for today is closed.";
       });
     }
 
@@ -202,6 +205,8 @@ class _MyHomePageState extends State<_MyHomePage> {
 
   Future<List<Map<String, dynamic>>> webfetch() async {
     List<Map<String, dynamic>> dataList = [];
+    List<String> elementsList = [];
+    List<String> nkelementsList = [];
     const djiurl = 'https://finance.yahoo.co.jp/quote/%5EDJI';
     //final djiresponse = await _fetchStd(djiurl);
 
@@ -209,19 +214,27 @@ class _MyHomePageState extends State<_MyHomePage> {
     final djiresponse = await http.get(uri);
     final djibody = parser.parse(djiresponse.body);
 
-    final djispanElements = djibody.querySelectorAll('span');
-    final djispanTexts =
-        djispanElements.map((spanElement) => spanElement.text).toList();
+    //final djispanElements = djibody.querySelectorAll('span');
+    djibody.querySelectorAll("span._3BGK5SVf").forEach((element) {
+      //print(element.text);
+      elementsList.add(element.text);
+    });
 
-    String djifirstChar = djispanTexts[23].substring(0, 1);
-    String djipolarity = djifirstChar == '-' ? '-' : '+';
+    //final djispanTexts =
+    //    djispanElements.map((spanElement) => spanElement.text).toList();
+
+    double number = double.parse(elementsList[1]);
+    String djipolarity = number < 0 ? '-' : '+';
+
+    //String djifirstChar = elementsList[1].substring(0, 1);
+    //String djipolarity = djifirstChar == '-' ? '-' : '+';
 
     Map<String, dynamic> djimapString = {
       "Code": "^DJI",
       "Name": "^DJI",
-      "Price": djispanTexts[17],
-      "Reshio": djispanTexts[22],
-      "Percent": djispanTexts[27],
+      "Price": elementsList[0],
+      "Reshio": elementsList[1],
+      "Percent": "${elementsList[2]}%",
       "Polarity": djipolarity,
       "Banefits": "Unused",
       "Evaluation": "Unused"
@@ -236,19 +249,26 @@ class _MyHomePageState extends State<_MyHomePage> {
     final nkresponse = await http.get(nkuri);
     final nkbody = parser.parse(nkresponse.body);
 
-    final nkspanElements = nkbody.querySelectorAll('span');
-    final nkspanTexts =
-        nkspanElements.map((spanElement) => spanElement.text).toList();
+    //final nkspanElements = nkbody.querySelectorAll('span');
+    nkbody.querySelectorAll("span._3wVTceYe").forEach((element) {
+      //print(element.text);
+      nkelementsList.add(element.text);
+    });
+    //final nkspanTexts =
+    //    nkspanElements.map((spanElement) => spanElement.text).toList();
 
-    String nkfirstChar = nkspanTexts[23].substring(0, 1);
-    String nkpolarity = nkfirstChar == '-' ? '-' : '+';
+    //String nkfirstChar = nkelementsList[1].substring(0, 1);
+    //String nkpolarity = nkfirstChar == '-' ? '-' : '+';
+
+    number = double.parse(nkelementsList[1]);
+    String nkpolarity = number < 0 ? '-' : '+';
 
     Map<String, dynamic> nkmapString = {
       "Code": "NIKKEI",
       "Name": "NIKKEI",
-      "Price": nkspanTexts[16],
-      "Reshio": nkspanTexts[23],
-      "Percent": nkspanTexts[26],
+      "Price": nkelementsList[0],
+      "Reshio": nkelementsList[1],
+      "Percent": "${nkelementsList[2]}%",
       "Polarity": nkpolarity,
       "Banefits": "Unused",
       "Evaluation": "Unused"
