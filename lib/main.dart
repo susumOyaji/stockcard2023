@@ -276,6 +276,33 @@ class _MyHomePageState extends State<_MyHomePage> {
     // オブジェクトをリストに追加
     dataList.add(nkmapString);
 
+    //Exchange Dollar Yen
+    final exchangeurl = 'https://finance.yahoo.co.jp/quote/USDJPY=X';
+    final exchangeuri = Uri.parse(exchangeurl); // バックエンドのURLをURIオブジェクトに変換
+    final exchageresponse = await http.get(exchangeuri);
+
+    final body = parser.parse(exchageresponse .body);
+    
+    final spanElements = body.querySelectorAll('span');
+    final spanTexts =
+        spanElements.map((spanElement) => spanElement.text).toList();
+     Map<String, dynamic> exchangemapString = {
+      "Code": "Exchange",
+      "Name": "Exchange",
+      "Price": spanTexts[17],
+      "Reshio": "Unused",
+      "Percent": "Unused",
+      "Polarity": "Unused",
+      "Banefits": "Unused",
+      "Evaluation": "Unused"
+    };
+    // オブジェクトをリストに追加
+    dataList.add(exchangemapString);
+
+
+
+
+
     for (int i = 0; i < stockdataList.length; i++) {
       print(stockdataList[i]["Code"]);
       final anyurl =
@@ -292,6 +319,11 @@ class _MyHomePageState extends State<_MyHomePage> {
       final spanElements = body.querySelectorAll('span');
       final spanTexts =
           spanElements.map((spanElement) => spanElement.text).toList();
+
+      //body.querySelectorAll("span._2wsoPtl7").forEach((element) {
+      //  spanTexts.add(element.text);
+      //  print(spanTexts);
+      //});
 
       // <dd>タグの3階層下にある<span>タグを検出 Reshio
       final ddTags = body.querySelectorAll('dd');
@@ -316,7 +348,7 @@ class _MyHomePageState extends State<_MyHomePage> {
           formatter.format(evaluation); //evaluation.toString();
 
       Map<String, dynamic> mapString = {
-        "Code": spanTexts[22],
+        "Code": spanTexts[24],
         "Name": h1Texts[1],
         "Price": spanTexts[21],
         "Reshio": ddElement, // spanTexts[29],
