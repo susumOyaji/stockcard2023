@@ -302,8 +302,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     // オブジェクトをリストに追加
     dataList.add(exchangemapString);
 
-    print(
-        "Bid: ${spanTexts[20]}  Ask: ${spanTexts[22]}  Change: ${spanTexts[24]}");
+   
 
     for (int i = 0; i < stockdataList.length; i++) {
       print(stockdataList[i]["Code"]);
@@ -815,9 +814,8 @@ class _MyHomePageState extends State<_MyHomePage> {
             ]),
             const SizedBox(
               width: 100,
-              
             ),
-             const SizedBox(
+            const SizedBox(
               width: 50,
               child: Icon(
                 Icons.currency_exchange,
@@ -828,20 +826,19 @@ class _MyHomePageState extends State<_MyHomePage> {
             SizedBox(
               //color: Colors.black,
               width: 200,
-              height: 200,
+              //height: 200,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Bid: ￥${stdstock[2]["Bid"]}',
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 22,
                       color: Colors.yellow,
                       fontFamily: 'NotoSansJP',
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  //SizedBox(height: 10), // Add some spacing between texts
                   Text(
                     'Ask: ￥${stdstock[2]["Ask"]}',
                     style: const TextStyle(
@@ -851,7 +848,6 @@ class _MyHomePageState extends State<_MyHomePage> {
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  //SizedBox(height: 10), // Add more spacing
                   Text(
                     'Change: ${stdstock[2]["Change"]}',
                     style: const TextStyle(
@@ -862,7 +858,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                     ),
                   ),
                 ],
-              ), //Text('Bid: ${stdstock[2]["Bid"]}'),
+              ),
             ),
           ]));
 
