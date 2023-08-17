@@ -277,31 +277,33 @@ class _MyHomePageState extends State<_MyHomePage> {
     dataList.add(nkmapString);
 
     //Exchange Dollar Yen
-    final exchangeurl = 'https://finance.yahoo.co.jp/quote/USDJPY=X';
+    const exchangeurl = 'https://finance.yahoo.co.jp/quote/USDJPY=FX';
     final exchangeuri = Uri.parse(exchangeurl); // バックエンドのURLをURIオブジェクトに変換
     final exchageresponse = await http.get(exchangeuri);
 
-    final body = parser.parse(exchageresponse .body);
-    
+    final body = parser.parse(exchageresponse.body);
+
     final spanElements = body.querySelectorAll('span');
     final spanTexts =
         spanElements.map((spanElement) => spanElement.text).toList();
-     Map<String, dynamic> exchangemapString = {
+    Map<String, dynamic> exchangemapString = {
       "Code": "Exchange",
       "Name": "Exchange",
-      "Price": spanTexts[17],
+      "Price": "Unused",
       "Reshio": "Unused",
       "Percent": "Unused",
       "Polarity": "Unused",
       "Banefits": "Unused",
-      "Evaluation": "Unused"
+      "Evaluation": "Unused",
+      "Bid": spanTexts[20],
+      "Ask": spanTexts[22],
+      "Change": spanTexts[24]
     };
     // オブジェクトをリストに追加
     dataList.add(exchangemapString);
 
-
-
-
+    print(
+        "Bid: ${spanTexts[20]}  Ask: ${spanTexts[22]}  Change: ${spanTexts[24]}");
 
     for (int i = 0; i < stockdataList.length; i++) {
       print(stockdataList[i]["Code"]);
@@ -666,147 +668,203 @@ class _MyHomePageState extends State<_MyHomePage> {
         borderRadius: BorderRadius.circular(10),
         color: const Color.fromARGB(255, 56, 50, 50),
       ),
-      child: Row(children: [
-        const Icon(
-          Icons.trending_up,
-          size: 42,
-          color: Colors.grey,
-        ),
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(
-            children: <Widget>[
-              CircleAvatar(
-                maxRadius: 5.0,
-                backgroundColor:
-                    stdstock[0]['Polarity'] == '+' ? Colors.red : Colors.green,
-              ),
-              const Text(
-                "Dow Price: \$ ",
-                style: TextStyle(
-                  fontSize: 15.0,
-                  color: Colors.white,
-                  fontFamily: 'NotoSansJP',
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: '${stdstock[0]['Price']}',
-                      style: const TextStyle(
-                        fontSize: 15.0, //fontWeight: FontWeight.bold,
-                        fontFamily: 'NotoSansJP',
-                        fontWeight: FontWeight.w900,
-                        color: Colors.blueAccent,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          Row(
-            children: <Widget>[
-              const SizedBox(width: 10),
-              const Text(
-                "          The day before ratio: \$ ",
-                style: TextStyle(
-                  fontSize: 15.0,
-                  color: Colors.white,
-                  fontFamily: 'NotoSansJP',
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text:
-                          '${stdstock[0]['Reshio'] + "   " + stdstock[0]["Percent"]}',
-                      style: TextStyle(
-                        fontSize: 15.0,
-                        color: stdstock[0]["Polarity"] == '+'
-                            ? Colors.red
-                            : Colors.green,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          // SizedBox(height: 10),
-
-          Row(
-            children: <Widget>[
-              CircleAvatar(
-                maxRadius: 5.0,
-                backgroundColor:
-                    stdstock[1]["Polarity"] == '+' ? Colors.red : Colors.green,
-              ),
-              const Text(
-                "Nikkey Price: ￥ ",
-                style: TextStyle(
-                  fontSize: 15.0,
-                  color: Colors.white,
-                  fontFamily: 'NotoSansJP',
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: '${stdstock[1]["Price"]}',
-                      style: const TextStyle(
-                        fontSize: 15.0,
-                        fontFamily: 'NotoSansJP',
-                        fontWeight: FontWeight.w900,
-                        color: Colors.blueAccent, //fontWeight: FontWeight.bold,
-                      ),
-                      //style: TextStyle(fontSize: 12.0,//fontWeight: FontWeight.bold,
-                      //),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          Row(children: <Widget>[
-            const SizedBox(width: 10),
-            const Text(
-              "          The day before ratio: ￥ ",
-              style: TextStyle(
-                fontSize: 15.0,
-                color: Colors.white,
-                fontFamily: 'NotoSansJP',
-                fontWeight: FontWeight.w900,
-              ),
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.start, // 垂直方向の配置方法
+          children: [
+            const Icon(
+              Icons.trending_up,
+              size: 42,
+              color: Colors.grey,
             ),
-            RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text:
-                        '${stdstock[1]["Reshio"] + "  " + stdstock[1]["Percent"]}',
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(
+                children: <Widget>[
+                  CircleAvatar(
+                    maxRadius: 5.0,
+                    backgroundColor: stdstock[0]['Polarity'] == '+'
+                        ? Colors.red
+                        : Colors.green,
+                  ),
+                  const Text(
+                    "Dow Price: \$ ",
                     style: TextStyle(
                       fontSize: 15.0,
-                      color: stdstock[1]["Polarity"] == '+'
-                          ? Colors.red
-                          : Colors.green,
-                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: 'NotoSansJP',
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: '${stdstock[0]['Price']}',
+                          style: const TextStyle(
+                            fontSize: 15.0, //fontWeight: FontWeight.bold,
+                            fontFamily: 'NotoSansJP',
+                            fontWeight: FontWeight.w900,
+                            color: Colors.blueAccent,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
+
+              Row(
+                children: <Widget>[
+                  const SizedBox(width: 10),
+                  const Text(
+                    "          The day before ratio: \$ ",
+                    style: TextStyle(
+                      fontSize: 15.0,
+                      color: Colors.white,
+                      fontFamily: 'NotoSansJP',
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text:
+                              '${stdstock[0]['Reshio'] + "   " + stdstock[0]["Percent"]}',
+                          style: TextStyle(
+                            fontSize: 15.0,
+                            color: stdstock[0]["Polarity"] == '+'
+                                ? Colors.red
+                                : Colors.green,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              // SizedBox(height: 10),
+
+              Row(
+                children: <Widget>[
+                  CircleAvatar(
+                    maxRadius: 5.0,
+                    backgroundColor: stdstock[1]["Polarity"] == '+'
+                        ? Colors.red
+                        : Colors.green,
+                  ),
+                  const Text(
+                    "Nikkey Price: ￥ ",
+                    style: TextStyle(
+                      fontSize: 15.0,
+                      color: Colors.white,
+                      fontFamily: 'NotoSansJP',
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: '${stdstock[1]["Price"]}',
+                          style: const TextStyle(
+                            fontSize: 15.0,
+                            fontFamily: 'NotoSansJP',
+                            fontWeight: FontWeight.w900,
+                            color: Colors
+                                .blueAccent, //fontWeight: FontWeight.bold,
+                          ),
+                          //style: TextStyle(fontSize: 12.0,//fontWeight: FontWeight.bold,
+                          //),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              Row(children: <Widget>[
+                const SizedBox(width: 10),
+                const Text(
+                  "          The day before ratio: ￥ ",
+                  style: TextStyle(
+                    fontSize: 15.0,
+                    color: Colors.white,
+                    fontFamily: 'NotoSansJP',
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text:
+                            '${stdstock[1]["Reshio"] + "  " + stdstock[1]["Percent"]}',
+                        style: TextStyle(
+                          fontSize: 15.0,
+                          color: stdstock[1]["Polarity"] == '+'
+                              ? Colors.red
+                              : Colors.green,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ]),
+            ]),
+            const SizedBox(
+              width: 100,
+              
             ),
-          ]),
-        ]),
-      ]));
+             const SizedBox(
+              width: 50,
+              child: Icon(
+                Icons.currency_exchange,
+                size: 35,
+                color: Colors.grey,
+              ),
+            ),
+            SizedBox(
+              //color: Colors.black,
+              width: 200,
+              height: 200,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Bid: ￥${stdstock[2]["Bid"]}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.yellow,
+                      fontFamily: 'NotoSansJP',
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  //SizedBox(height: 10), // Add some spacing between texts
+                  Text(
+                    'Ask: ￥${stdstock[2]["Ask"]}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.orange,
+                      fontFamily: 'NotoSansJP',
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  //SizedBox(height: 10), // Add more spacing
+                  Text(
+                    'Change: ${stdstock[2]["Change"]}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.red,
+                      fontFamily: 'NotoSansJP',
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ],
+              ), //Text('Bid: ${stdstock[2]["Bid"]}'),
+            ),
+          ]));
 
   Container stackAssetView(asset) => Container(
         padding: const EdgeInsets.only(top: 5.0),
@@ -1204,7 +1262,7 @@ class _MyHomePageState extends State<_MyHomePage> {
 
   Widget _buildFloatingActionButton() {
     return Positioned(
-      top: 13.0, // 下からの距離を調整
+      top: 34.0, // 下からの距離を調整
       right: 6.0, // 右からの距離を調整
       child: Column(
         verticalDirection: VerticalDirection.down,
@@ -1360,8 +1418,9 @@ class _MyHomePageState extends State<_MyHomePage> {
             }
             List<Map<String, dynamic>> stockDataList = snapshot.data!;
 
-            var stdstock = stockDataList;
-            var anystock = stockDataList.sublist(2);
+            var stdstock = stockDataList.sublist(0, 3);
+            var exchang = stockDataList[2];
+            var anystock = stockDataList.sublist(3);
             var asset = getAsset(anystock);
             return //Column(
                 //children: <Widget>[
@@ -1492,7 +1551,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                       )),
                   Positioned(
                     right: 100.0,
-                    top: 20.0,
+                    top: 50.0,
                     child: Text(
                         "  $formattedDate" /*+ '  ' + now.month.toString()*/,
                         style: const TextStyle(
