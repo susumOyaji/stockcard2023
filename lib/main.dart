@@ -302,8 +302,6 @@ class _MyHomePageState extends State<_MyHomePage> {
     // オブジェクトをリストに追加
     dataList.add(exchangemapString);
 
-   
-
     for (int i = 0; i < stockdataList.length; i++) {
       print(stockdataList[i]["Code"]);
       final anyurl =
@@ -625,6 +623,15 @@ class _MyHomePageState extends State<_MyHomePage> {
   }
 
   void _refreshSetup(int time) {
+    // 現在の時刻を取得（GMT）
+    DateTime now = DateTime.now().toUtc();
+
+    // タイムゾーンをJSTに変更
+    DateTime jstNow = now.add(const Duration(hours: 9));
+    DateTime _startTime =
+        DateTime(jstNow.year, jstNow.month, jstNow.day, 9, 0, 0);
+    DateTime _endTime =
+        DateTime(jstNow.year, jstNow.month, jstNow.day, 15, 0, 0);
     // タイマーをキャンセルしてリフレッシュを停止
     _refreshTimer?.cancel();
     setState(() {
@@ -634,10 +641,21 @@ class _MyHomePageState extends State<_MyHomePage> {
     });
     _refreshTimer =
         Timer.periodic(Duration(seconds: _refreshTime), (Timer timer) {
+      final now = _convertToJst(DateTime.now());
       //time秒ごとに呼び出されるメソッド
-
       _refreshData();
+
+      if (now.isBefore(_endTime)) {
+        print("Timer is running at ${now.toLocal()}");
+      } else {
+        timer.cancel();
+        print("Timer stopped at ${now.toLocal()}");
+      }
     });
+  }
+
+  DateTime _convertToJst(DateTime localTime) {
+    return localTime.add(const Duration(hours: 9)); // UTC+9 (JST)
   }
 
   void _refreshData() {
