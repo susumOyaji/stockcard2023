@@ -4,7 +4,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
-//import 'dart:html';
+
 import 'package:html/parser.dart' as parser;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Clipper.dart';
@@ -19,7 +19,7 @@ void main() async {
 }
 
 // サイズを固定
-const double windowWidth = 700;
+const double windowWidth = 750;
 const double windowHeight = 1000;
 
 // サイズを設定するメソッド
@@ -30,13 +30,15 @@ void setupWindow() {
     //setWindowTitle('sample');
     setWindowMinSize(const Size(windowWidth, windowHeight));
     setWindowMaxSize(const Size(windowWidth, windowHeight));
+    /*
     getCurrentScreen().then((screen) {
       setWindowFrame(Rect.fromCenter(
         center: screen!.frame.center,
         width: windowWidth,
         height: windowHeight,
       ));
-    });
+    });*/
+
   }
 }
 
@@ -133,7 +135,7 @@ class _MyHomePageState extends State<_MyHomePage> {
           'The todayMarket Starts in ${remainingOpenTime.inHours % 24}hour and ${remainingOpenTime.inMinutes % 60}minutes more';
       setState(() {
         // タイマーをキャンセルしてリフレッシュを停止
-        _refreshTimer?.cancel();
+        //_refreshTimer?.cancel();
         _refreshTimeString =
             "The timer is currently stopped as the market for today has not started yet.";
       });
@@ -168,7 +170,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     if (MediaQuery.of(context).size.shortestSide < 600) {
       return MediaQuery.of(context).size.height * 0.3;
     } else {
-      return MediaQuery.of(context).size.height * 0.2;
+      return MediaQuery.of(context).size.height * 0.99;
     }
   }
 
@@ -220,14 +222,12 @@ class _MyHomePageState extends State<_MyHomePage> {
       elementsList.add(element.text);
     });
 
-    //final djispanTexts =
-    //    djispanElements.map((spanElement) => spanElement.text).toList();
+   
 
     double number = double.parse(elementsList[1]);
     String djipolarity = number < 0 ? '-' : '+';
 
-    //String djifirstChar = elementsList[1].substring(0, 1);
-    //String djipolarity = djifirstChar == '-' ? '-' : '+';
+    
 
     Map<String, dynamic> djimapString = {
       "Code": "^DJI",
@@ -254,11 +254,7 @@ class _MyHomePageState extends State<_MyHomePage> {
       //print(element.text);
       nkelementsList.add(element.text);
     });
-    //final nkspanTexts =
-    //    nkspanElements.map((spanElement) => spanElement.text).toList();
-
-    //String nkfirstChar = nkelementsList[1].substring(0, 1);
-    //String nkpolarity = nkfirstChar == '-' ? '-' : '+';
+   
 
     number = double.parse(nkelementsList[1]);
     String nkpolarity = number < 0 ? '-' : '+';
@@ -319,10 +315,7 @@ class _MyHomePageState extends State<_MyHomePage> {
       final spanTexts =
           spanElements.map((spanElement) => spanElement.text).toList();
 
-      //body.querySelectorAll("span._2wsoPtl7").forEach((element) {
-      //  spanTexts.add(element.text);
-      //  print(spanTexts);
-      //});
+     
 
       // <dd>タグの3階層下にある<span>タグを検出 Reshio
       final ddTags = body.querySelectorAll('dd');
@@ -614,24 +607,17 @@ class _MyHomePageState extends State<_MyHomePage> {
     //deleteData();
     loadData();
 
+    _stdTimerSetup(_refreshTime); 
     _refreshSetup(_refreshTime);
     //Timer.periodic(Duration(seconds: _refreshTime), (Timer timer) {
     //60秒ごとに呼び出されるメソッド
     //  _refreshData();
     //});
+
     _refreshData();
   }
 
   void _refreshSetup(int time) {
-    // 現在の時刻を取得（GMT）
-    DateTime now = DateTime.now().toUtc();
-
-    // タイムゾーンをJSTに変更
-    DateTime jstNow = now.add(const Duration(hours: 9));
-    DateTime _startTime =
-        DateTime(jstNow.year, jstNow.month, jstNow.day, 9, 0, 0);
-    DateTime _endTime =
-        DateTime(jstNow.year, jstNow.month, jstNow.day, 15, 0, 0);
     // タイマーをキャンセルしてリフレッシュを停止
     _refreshTimer?.cancel();
     setState(() {
@@ -641,16 +627,8 @@ class _MyHomePageState extends State<_MyHomePage> {
     });
     _refreshTimer =
         Timer.periodic(Duration(seconds: _refreshTime), (Timer timer) {
-      final now = _convertToJst(DateTime.now());
       //time秒ごとに呼び出されるメソッド
       _refreshData();
-
-      if (now.isBefore(_endTime)) {
-        print("Timer is running at ${now.toLocal()}");
-      } else {
-        timer.cancel();
-        print("Timer stopped at ${now.toLocal()}");
-      }
     });
   }
 
@@ -658,11 +636,18 @@ class _MyHomePageState extends State<_MyHomePage> {
     return localTime.add(const Duration(hours: 9)); // UTC+9 (JST)
   }
 
+
+  void _stdTimerSetup() {
+    setState(() {
+      print("_stdTimer");
+     moreHours = getFormattedOpentime();
+    });
+  }
   void _refreshData() {
     setState(() {
       print("_refreshData");
       returnMap = webfetch();
-      moreHours = getFormattedOpentime();
+      //moreHours = getFormattedOpentime();
     });
   }
 
@@ -674,7 +659,7 @@ class _MyHomePageState extends State<_MyHomePage> {
   }
 
   Container stackmarketView(stdstock) => Container(
-      padding: const EdgeInsets.only(top: 10.0),
+      padding: const EdgeInsets.only(top: 10.0,right: 10.0),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -831,7 +816,7 @@ class _MyHomePageState extends State<_MyHomePage> {
               ]),
             ]),
             const SizedBox(
-              width: 100,
+              width: 50,
             ),
             const SizedBox(
               width: 50,
@@ -843,7 +828,7 @@ class _MyHomePageState extends State<_MyHomePage> {
             ),
             SizedBox(
               //color: Colors.black,
-              width: 200,
+              width: 180,
               //height: 200,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -851,7 +836,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                   Text(
                     'Bid: ￥${stdstock[2]["Bid"]}',
                     style: const TextStyle(
-                      fontSize: 22,
+                      fontSize: 18,
                       color: Colors.yellow,
                       fontFamily: 'NotoSansJP',
                       fontWeight: FontWeight.w900,
@@ -1433,7 +1418,7 @@ class _MyHomePageState extends State<_MyHomePage> {
             List<Map<String, dynamic>> stockDataList = snapshot.data!;
 
             var stdstock = stockDataList.sublist(0, 3);
-            var exchang = stockDataList[2];
+            //var exchang = stockDataList[2];
             var anystock = stockDataList.sublist(3);
             var asset = getAsset(anystock);
             return //Column(
@@ -1442,6 +1427,7 @@ class _MyHomePageState extends State<_MyHomePage> {
               //width: 280,
               margin: const EdgeInsets.all(0.0),
               width: _getContainerWidth(context),
+              height: _getContainerHeight(context),
               padding: const EdgeInsets.only(left: 10.0, right: 10.0),
               child: Stack(
                 children: [
@@ -1519,7 +1505,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                               ),
                               Container(
                                   margin: const EdgeInsets.only(
-                                      top: 10.0, right: 0.0, bottom: 0.0),
+                                      top: 10.0, right: 10.0, bottom: 0.0),
                                   padding: const EdgeInsets.all(5.0),
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
@@ -1533,19 +1519,29 @@ class _MyHomePageState extends State<_MyHomePage> {
                                       bottomRight: Radius.circular(10),
                                     ),
                                   ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.max,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    //mainAxisSize: MainAxisSize.max,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
+                                      const Text(
+                                        "Please Watch to Comments: ",
+                                        style: TextStyle(
+                                          fontSize: 15.0,
+                                          fontFamily: 'NotoSansJP',
+                                          //fontWeight: FontWeight.w900,
+                                          color: Colors.greenAccent,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                       Text(
-                                        "Please Watch to Comments: $moreHours",
+                                        "$moreHours",
                                         style: const TextStyle(
                                           fontSize: 15.0,
                                           fontFamily: 'NotoSansJP',
                                           //fontWeight: FontWeight.w900,
-                                          color: Colors.yellowAccent,
+                                          color: Colors.orangeAccent,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
