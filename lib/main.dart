@@ -38,7 +38,6 @@ void setupWindow() {
         height: windowHeight,
       ));
     });*/
-
   }
 }
 
@@ -80,10 +79,13 @@ class _MyHomePageState extends State<_MyHomePage> {
   final TextEditingController _textEditingController3 = TextEditingController();
 
   bool _isMenuOpen = false;
-  int _refreshTime = 60;
-  String _refreshTimeString = ""; //_refreshTime.toString();
-  Timer? _refreshTimer;
 
+  String _refreshTimeString = ""; //_refreshTime.toString();
+  bool _refetchTimerOn = false;
+  int _refreshTime = 60;
+  Timer? _refreshTimer;
+  final int _backupTime = 60;
+  Timer? _backupTimer;
   /*
   static List<Map<String, dynamic>> stockdata = [
     {"Code": "6758", "Shares": 200, "Unitprice": 1665},
@@ -134,22 +136,26 @@ class _MyHomePageState extends State<_MyHomePage> {
       result =
           'The todayMarket Starts in ${remainingOpenTime.inHours % 24}hour and ${remainingOpenTime.inMinutes % 60}minutes more';
       setState(() {
-        // タイマーをキャンセルしてリフレッシュを停止
-        //_refreshTimer?.cancel();
         _refreshTimeString =
             "The timer is currently stopped as the market for today has not started yet.";
       });
     } else if (jstNow.hour >= openTime.hour && jstNow.hour < closeTime.hour) {
       result =
           'The Market Closes in ${remainingTime.inHours}hour ${remainingTime.inMinutes % 60}minutes';
+      // タイマーをキャンセルしてリフレッシュを停止
+      _backupTimer?.cancel();
+      _refreshSetup(_refreshTime);
+      _refetchTimerOn = false;
     } else if (jstNow.hour >= closeTime.hour) {
       result =
           'The tomorrowMarket Starts in ${remainingTimeTomorrow.inHours % 24}hour and ${remainingTimeTomorrow.inMinutes % 60}minutes';
       setState(() {
         // タイマーをキャンセルしてリフレッシュを停止
         _refreshTimer?.cancel();
+        _backupTimerSetup(_backupTime);
         _refreshTimeString =
             "The timer is currently stopped as the market for today is closed.";
+        _refetchTimerOn = false;
       });
     }
 
@@ -222,12 +228,8 @@ class _MyHomePageState extends State<_MyHomePage> {
       elementsList.add(element.text);
     });
 
-   
-
     double number = double.parse(elementsList[1]);
     String djipolarity = number < 0 ? '-' : '+';
-
-    
 
     Map<String, dynamic> djimapString = {
       "Code": "^DJI",
@@ -254,7 +256,6 @@ class _MyHomePageState extends State<_MyHomePage> {
       //print(element.text);
       nkelementsList.add(element.text);
     });
-   
 
     number = double.parse(nkelementsList[1]);
     String nkpolarity = number < 0 ? '-' : '+';
@@ -315,8 +316,6 @@ class _MyHomePageState extends State<_MyHomePage> {
       final spanTexts =
           spanElements.map((spanElement) => spanElement.text).toList();
 
-     
-
       // <dd>タグの3階層下にある<span>タグを検出 Reshio
       final ddTags = body.querySelectorAll('dd');
       final ddElements = ddTags.map((ddElement) => ddElement.text).toList();
@@ -340,7 +339,7 @@ class _MyHomePageState extends State<_MyHomePage> {
           formatter.format(evaluation); //evaluation.toString();
 
       Map<String, dynamic> mapString = {
-        "Code": spanTexts[24],
+        "Code": spanTexts[22],
         "Name": h1Texts[1],
         "Price": spanTexts[21],
         "Reshio": ddElement, // spanTexts[29],
@@ -606,15 +605,15 @@ class _MyHomePageState extends State<_MyHomePage> {
     //moreHours = getFormattedOpentime();
     //deleteData();
     loadData();
-
-    _stdTimerSetup(_refreshTime); 
+    //moreHours = getFormattedOpentime();
+    //_backupTimerSetup(_backupTime);
     _refreshSetup(_refreshTime);
     //Timer.periodic(Duration(seconds: _refreshTime), (Timer timer) {
     //60秒ごとに呼び出されるメソッド
     //  _refreshData();
     //});
-
-    _refreshData();
+    _refetchTimerOn = true;
+    //_refreshData();
   }
 
   void _refreshSetup(int time) {
@@ -629,6 +628,7 @@ class _MyHomePageState extends State<_MyHomePage> {
         Timer.periodic(Duration(seconds: _refreshTime), (Timer timer) {
       //time秒ごとに呼び出されるメソッド
       _refreshData();
+      //_refreshMoreHours();
     });
   }
 
@@ -636,18 +636,27 @@ class _MyHomePageState extends State<_MyHomePage> {
     return localTime.add(const Duration(hours: 9)); // UTC+9 (JST)
   }
 
-
-  void _stdTimerSetup() {
+  void _backupTimerSetup(int time) {
     setState(() {
-      print("_stdTimer");
-     moreHours = getFormattedOpentime();
+      _backupTimer = Timer.periodic(Duration(seconds: time), (Timer timer) {
+        moreHours = getFormattedOpentime();
+        print("_stdTimer$time");
+      });
     });
   }
+
   void _refreshData() {
     setState(() {
       print("_refreshData");
       returnMap = webfetch();
       //moreHours = getFormattedOpentime();
+    });
+  }
+
+  void _refreshMoreHours() {
+    setState(() {
+      print("_refreshMoreHours");
+      moreHours = getFormattedOpentime();
     });
   }
 
@@ -659,7 +668,7 @@ class _MyHomePageState extends State<_MyHomePage> {
   }
 
   Container stackmarketView(stdstock) => Container(
-      padding: const EdgeInsets.only(top: 10.0,right: 10.0),
+      padding: const EdgeInsets.only(top: 10.0, right: 10.0),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -1536,7 +1545,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                                         ),
                                       ),
                                       Text(
-                                        "$moreHours",
+                                        moreHours,
                                         style: const TextStyle(
                                           fontSize: 15.0,
                                           fontFamily: 'NotoSansJP',

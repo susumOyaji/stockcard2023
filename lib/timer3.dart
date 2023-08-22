@@ -2,19 +2,23 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: TimerExample(),
     );
   }
 }
 
 class TimerExample extends StatefulWidget {
+  const TimerExample({super.key});
+
   @override
   _TimerExampleState createState() => _TimerExampleState();
 }
@@ -70,7 +74,7 @@ class _TimerExampleState extends State<TimerExample> {
           _startTimer(); // タイマーを開始
         } else {
           print("Waiting for start time... ${waitForStart.inSeconds} seconds remaining");
-          waitForStart -= Duration(seconds: 1);
+          waitForStart -= const Duration(seconds: 1);
         }
       });
     }

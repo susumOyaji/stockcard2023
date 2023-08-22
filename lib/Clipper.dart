@@ -7,8 +7,8 @@ class MyCustomClipper extends CustomClipper<Path> {
 
     var path = Path();
 
-    debugPrint("size.width: " + size.width.toString());
-    debugPrint("size.height: " + size.height.toString());
+    debugPrint("size.width: ${size.width}");
+    debugPrint("size.height: ${size.height}");
     path.moveTo(0.0, 0.0); //P0
 
     path.lineTo(size.width - radius * 3.0, 0.0); //P2

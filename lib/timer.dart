@@ -1,22 +1,25 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: TimerExample(),
     );
   }
 }
 
 class TimerExample extends StatefulWidget {
+  const TimerExample({super.key});
+
   @override
   _TimerExampleState createState() => _TimerExampleState();
 }
@@ -25,7 +28,7 @@ class _TimerExampleState extends State<TimerExample> {
   late Timer _timer;
   late DateTime _startTime;
   late DateTime _endTime;
-  final Duration _interval = Duration(seconds: 1);
+  final Duration _interval = const Duration(seconds: 1);
   late DateTime jstNow;
 
   @override
@@ -78,9 +81,9 @@ class _TimerExampleState extends State<TimerExample> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Timer Example'),
+        title: const Text('Timer Example'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Timer is running...'),
       ),
     );

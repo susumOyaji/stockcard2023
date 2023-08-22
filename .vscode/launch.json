@@ -11,6 +11,13 @@
             "program": "${file}"
         },
         {
+            "name": "Debug",
+            "request": "launch",
+            "type": "dart",
+            "preLaunchTask": "Run flutter create --platforms=macos .",
+            // 他の設定...
+        },
+        {
             "name": "stockcard2023",
             "request": "launch",
             "type": "dart"
