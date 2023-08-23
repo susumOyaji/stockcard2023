@@ -81,11 +81,12 @@ class _MyHomePageState extends State<_MyHomePage> {
   bool _isMenuOpen = false;
 
   String _refreshTimeString = ""; //_refreshTime.toString();
-  bool _refetchTimerOn = false;
-  int _refreshTime = 60;
-  Timer? _refreshTimer;
-  final int _backupTime = 60;
-  Timer? _backupTimer;
+
+  late int _refreshTime;
+  late Timer? _refreshTimer;
+  late bool _refreshTimerCancelled;
+  late int _backupTime;
+  //late Timer? _backupTimer;
   /*
   static List<Map<String, dynamic>> stockdata = [
     {"Code": "6758", "Shares": 200, "Unitprice": 1665},
@@ -110,9 +111,6 @@ class _MyHomePageState extends State<_MyHomePage> {
     // JSTの時刻をフォーマットして表示
     formattedDate = formatter.format(jstNow);
 
-    //print('JST: $formattedJST');
-
-    //DateTime now = DateTime.now();
     // 9:00までの時間差を計算
     DateTime openTime =
         DateTime(jstNow.year, jstNow.month, jstNow.day, 9, 0, 0);
@@ -142,21 +140,25 @@ class _MyHomePageState extends State<_MyHomePage> {
     } else if (jstNow.hour >= openTime.hour && jstNow.hour < closeTime.hour) {
       result =
           'The Market Closes in ${remainingTime.inHours}hour ${remainingTime.inMinutes % 60}minutes';
-      // タイマーをキャンセルしてリフレッシュを停止
-      _backupTimer?.cancel();
-      _refreshSetup(_refreshTime);
-      _refetchTimerOn = false;
+      if (_refreshTimer == null) {
+        print("Null: $_refreshTimer");
+        _refreshSetup(_refreshTime);
+        _refreshTimerCancelled = false;
+      }
     } else if (jstNow.hour >= closeTime.hour) {
       result =
           'The tomorrowMarket Starts in ${remainingTimeTomorrow.inHours % 24}hour and ${remainingTimeTomorrow.inMinutes % 60}minutes';
-      setState(() {
-        // タイマーをキャンセルしてリフレッシュを停止
-        _refreshTimer?.cancel();
-        _backupTimerSetup(_backupTime);
-        _refreshTimeString =
-            "The timer is currently stopped as the market for today is closed.";
-        _refetchTimerOn = false;
-      });
+
+      if (_refreshTimer != null && _refreshTimerCancelled == false) {
+        setState(() {
+          // タイマーをキャンセルしてリフレッシュを停止
+          _refreshTimer?.cancel();
+          _refreshTimerCancelled = true;
+          print("_refreshTimer to cancel");
+          _refreshTimeString =
+              "The timer is currently stopped as the market for today is closed.";
+        });
+      }
     }
 
     return result;
@@ -477,14 +479,11 @@ class _MyHomePageState extends State<_MyHomePage> {
       stockdataList.sort((a, b) => (a["Code"]).compareTo(b["Code"]));
 
       await saveData();
-      setState(() {
-        print('Data added and sorted successfully.');
-      });
+
+      print('Data added and sorted successfully.');
     } else {
-      setState(() {
-        print(
-            'Data with the same ID already exists. Duplicate registration prevented.');
-      });
+      print(
+          'Data with the same ID already exists. Duplicate registration prevented.');
     }
   }
 
@@ -602,23 +601,18 @@ class _MyHomePageState extends State<_MyHomePage> {
   void initState() {
     super.initState();
 
-    //moreHours = getFormattedOpentime();
     //deleteData();
+    _refreshTime = 60;
+    _refreshTimerCancelled = false;
+    _backupTime = 60;
+
     loadData();
-    //moreHours = getFormattedOpentime();
-    //_backupTimerSetup(_backupTime);
+    _refreshData();
     _refreshSetup(_refreshTime);
-    //Timer.periodic(Duration(seconds: _refreshTime), (Timer timer) {
-    //60秒ごとに呼び出されるメソッド
-    //  _refreshData();
-    //});
-    _refetchTimerOn = true;
-    //_refreshData();
+    _refreshMoreHours();
   }
 
   void _refreshSetup(int time) {
-    // タイマーをキャンセルしてリフレッシュを停止
-    _refreshTimer?.cancel();
     setState(() {
       _refreshTime = time;
       _refreshTimeString = _refreshTime.toString();
@@ -628,7 +622,11 @@ class _MyHomePageState extends State<_MyHomePage> {
         Timer.periodic(Duration(seconds: _refreshTime), (Timer timer) {
       //time秒ごとに呼び出されるメソッド
       _refreshData();
-      //_refreshMoreHours();
+    });
+
+    Timer.periodic(Duration(seconds: _backupTime), (Timer timer) {
+      //time秒ごとに呼び出されるメソッド
+      _refreshMoreHours();
     });
   }
 
@@ -636,20 +634,10 @@ class _MyHomePageState extends State<_MyHomePage> {
     return localTime.add(const Duration(hours: 9)); // UTC+9 (JST)
   }
 
-  void _backupTimerSetup(int time) {
-    setState(() {
-      _backupTimer = Timer.periodic(Duration(seconds: time), (Timer timer) {
-        moreHours = getFormattedOpentime();
-        print("_stdTimer$time");
-      });
-    });
-  }
-
   void _refreshData() {
     setState(() {
       print("_refreshData");
       returnMap = webfetch();
-      //moreHours = getFormattedOpentime();
     });
   }
 
@@ -837,7 +825,7 @@ class _MyHomePageState extends State<_MyHomePage> {
             ),
             SizedBox(
               //color: Colors.black,
-              width: 180,
+              width: 150,
               //height: 200,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
