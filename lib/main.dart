@@ -133,15 +133,21 @@ class _MyHomePageState extends State<_MyHomePage> {
     if (jstNow.hour < openTime.hour) {
       result =
           'The todayMarket Starts in ${remainingOpenTime.inHours % 24}hour and ${remainingOpenTime.inMinutes % 60}minutes more';
-      setState(() {
-        _refreshTimeString =
-            "The timer is currently stopped as the market for today has not started yet.";
-      });
+
+      if (_refreshTimer != null && _refreshTimerCancelled == false) {
+        setState(() {
+          // タイマーをキャンセルしてリフレッシュを停止
+          _refreshTimer?.cancel();
+          _refreshTimerCancelled = true;
+          _refreshTimeString =
+              "The timer is currently stopped as the market for today has not started yet.";
+        });
+      }
     } else if (jstNow.hour >= openTime.hour && jstNow.hour < closeTime.hour) {
       result =
           'The Market Closes in ${remainingTime.inHours}hour ${remainingTime.inMinutes % 60}minutes';
-      if (_refreshTimer == null) {
-        print("Null: $_refreshTimer");
+
+      if (_refreshTimerCancelled == true) {
         _refreshSetup(_refreshTime);
         _refreshTimerCancelled = false;
       }
@@ -154,7 +160,6 @@ class _MyHomePageState extends State<_MyHomePage> {
           // タイマーをキャンセルしてリフレッシュを停止
           _refreshTimer?.cancel();
           _refreshTimerCancelled = true;
-          print("_refreshTimer to cancel");
           _refreshTimeString =
               "The timer is currently stopped as the market for today is closed.";
         });
@@ -834,27 +839,27 @@ class _MyHomePageState extends State<_MyHomePage> {
                     'Bid: ￥${stdstock[2]["Bid"]}',
                     style: const TextStyle(
                       fontSize: 18,
-                      color: Colors.yellow,
+                      color: Colors.blueAccent,
                       fontFamily: 'NotoSansJP',
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   Text(
                     'Ask: ￥${stdstock[2]["Ask"]}',
                     style: const TextStyle(
                       fontSize: 18,
-                      color: Colors.orange,
+                      color: Colors.yellowAccent,
                       fontFamily: 'NotoSansJP',
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   Text(
                     'Change: ${stdstock[2]["Change"]}',
                     style: const TextStyle(
                       fontSize: 18,
-                      color: Colors.red,
+                      color: Colors.redAccent,
                       fontFamily: 'NotoSansJP',
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
