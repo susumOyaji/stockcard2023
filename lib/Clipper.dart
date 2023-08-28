@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:developer';
 
 class MyCustomClipper extends CustomClipper<Path> {
   @override
@@ -7,8 +8,8 @@ class MyCustomClipper extends CustomClipper<Path> {
 
     var path = Path();
 
-    debugPrint("size.width: ${size.width}");
-    debugPrint("size.height: ${size.height}");
+    log("MyCustomClipper.width_size: ${size.width}");
+    log("MyCustomClipper.height_size: ${size.height}");
     path.moveTo(0.0, 0.0); //P0
 
     path.lineTo(size.width - radius * 3.0, 0.0); //P2

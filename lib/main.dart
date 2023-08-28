@@ -7,11 +7,13 @@ import 'dart:async';
 
 import 'package:html/parser.dart' as parser;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'Clipper.dart';
+import 'package:stockcard2023/clipper.dart';
+//import 'clipper.dart';
 
 import 'package:window_size/window_size.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
+import 'dart:developer';
 
 void main() async {
   setupWindow(); // サイズを設定
@@ -30,6 +32,7 @@ void setupWindow() {
     //setWindowTitle('sample');
     setWindowMinSize(const Size(windowWidth, windowHeight));
     setWindowMaxSize(const Size(windowWidth, windowHeight));
+  
     /*
     getCurrentScreen().then((screen) {
       setWindowFrame(Rect.fromCenter(
@@ -192,7 +195,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     if (MediaQuery.of(context).size.shortestSide < 600) {
       return MediaQuery.of(context).size.width * 0.05;
     } else {
-      return MediaQuery.of(context).size.width * 0.03;
+      return MediaQuery.of(context).size.width * 0.04;
     }
   }
 
@@ -208,12 +211,13 @@ class _MyHomePageState extends State<_MyHomePage> {
 
       setState(() {
         stockdataList = decodedData.cast<Map<String, dynamic>>();
-        print(stockdataList);
-        print("All data has been loaded.");
+        //print(stockdataList);
+        log('$stockdataList');
+        log("All data has been loaded.");
       });
     } else {
       setState(() {
-        print("Non LoadData");
+        log("Non LoadData");
       });
     }
   }
@@ -307,7 +311,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     dataList.add(exchangemapString);
 
     for (int i = 0; i < stockdataList.length; i++) {
-      print(stockdataList[i]["Code"]);
+      log((stockdataList[i]["Code"]).toString());
       final anyurl =
           'https://finance.yahoo.co.jp/quote/${stockdataList[i]["Code"]}.T';
       //final bodyresponse = await _fetchStd(url);
@@ -441,9 +445,9 @@ class _MyHomePageState extends State<_MyHomePage> {
                 String enteredText = _textEditingController.text;
                 String enteredText2 = _textEditingController2.text;
                 String enteredText3 = _textEditingController3.text;
-                // TODO: 入力されたテキストの処理
-                print('ButtonName: $enteredText');
-                print('Entered Text 2: $enteredText2');
+                //ＴＯＤＯ：入力されたテキストの処理
+                log('ButtonName: $enteredText');
+                log('Entered Text 2: $enteredText2');
 
                 setState(() {
                   stocknewData = {
@@ -485,10 +489,9 @@ class _MyHomePageState extends State<_MyHomePage> {
 
       await saveData();
 
-      print('Data added and sorted successfully.');
+      log('Data added and sorted successfully.');
     } else {
-      print(
-          'Data with the same ID already exists. Duplicate registration prevented.');
+      log('Data with the same ID already exists. Duplicate registration prevented.');
     }
   }
 
@@ -621,7 +624,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     setState(() {
       _refreshTime = time;
       _refreshTimeString = _refreshTime.toString();
-      print("_refreshSetup$time");
+      log("_refreshSetup$time");
     });
     _refreshTimer =
         Timer.periodic(Duration(seconds: _refreshTime), (Timer timer) {
@@ -635,20 +638,20 @@ class _MyHomePageState extends State<_MyHomePage> {
     });
   }
 
-  DateTime _convertToJst(DateTime localTime) {
-    return localTime.add(const Duration(hours: 9)); // UTC+9 (JST)
-  }
+ //DateTime _convertToJst(DateTime localTime) {
+ //   return localTime.add(const Duration(hours: 9)); // UTC+9 (JST)
+ // }
 
   void _refreshData() {
     setState(() {
-      print("_refreshData");
+      log("_refreshData");
       returnMap = webfetch();
     });
   }
 
   void _refreshMoreHours() {
     setState(() {
-      print("_refreshMoreHours");
+      log("_refreshMoreHours");
       moreHours = getFormattedOpentime();
     });
   }
@@ -657,7 +660,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     setState(() {
       _isMenuOpen = !_isMenuOpen;
     });
-    print("isMenuOpen:  $_isMenuOpen");
+    log("isMenuOpen:  $_isMenuOpen");
   }
 
   Container stackmarketView(stdstock) => Container(
@@ -1272,7 +1275,7 @@ class _MyHomePageState extends State<_MyHomePage> {
           if (_isMenuOpen) ...[
             InkWell(
               onTap: () {
-                print('ClipOval tapped!');
+                log('ClipOval tapped!');
                 _toggleMenu();
                 _refreshSetup(1);
               },
@@ -1311,7 +1314,7 @@ class _MyHomePageState extends State<_MyHomePage> {
             ),
             InkWell(
               onTap: () {
-                print('ClipOval tapped!');
+                log('ClipOval tapped!');
                 _toggleMenu();
                 _refreshSetup(60);
               },
@@ -1334,7 +1337,7 @@ class _MyHomePageState extends State<_MyHomePage> {
             ),
             InkWell(
               onTap: () {
-                print('ClipOval tapped!');
+                log('ClipOval tapped!');
                 _toggleMenu();
                 _refreshSetup(300);
               },
@@ -1357,7 +1360,7 @@ class _MyHomePageState extends State<_MyHomePage> {
             ),
             InkWell(
               onTap: () {
-                print('ClipOval tapped!');
+                log('ClipOval tapped!');
                 _toggleMenu();
                 _refreshSetup(3600);
               },
@@ -1463,7 +1466,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                                         bottomRight: Radius.circular(10),
                                       ),
                                     ),
-                                    child: const Row(
+                                    child: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: <Widget>[
@@ -1474,7 +1477,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                                             Text(
                                               "Stocks",
                                               style: TextStyle(
-                                                fontSize: 30.0,
+                                                fontSize: _getFontSize(context),
                                                 color: Colors.orange,
                                                 fontWeight: FontWeight.bold,
                                               ),
