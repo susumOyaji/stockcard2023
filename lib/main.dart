@@ -32,7 +32,7 @@ void setupWindow() {
     //setWindowTitle('sample');
     setWindowMinSize(const Size(windowWidth, windowHeight));
     setWindowMaxSize(const Size(windowWidth, windowHeight));
-  
+
     /*
     getCurrentScreen().then((screen) {
       setWindowFrame(Rect.fromCenter(
@@ -226,6 +226,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     List<Map<String, dynamic>> dataList = [];
     List<String> elementsList = [];
     List<String> nkelementsList = [];
+    List<String> fxelementsList = [];
     const djiurl = 'https://finance.yahoo.co.jp/quote/%5EDJI';
     //final djiresponse = await _fetchStd(djiurl);
 
@@ -291,9 +292,13 @@ class _MyHomePageState extends State<_MyHomePage> {
 
     final body = parser.parse(exchageresponse.body);
 
-    final spanElements = body.querySelectorAll('span');
-    final spanTexts =
-        spanElements.map((spanElement) => spanElement.text).toList();
+    //final spanElements = body.querySelectorAll('span');
+    body.querySelectorAll("span._3Pvw_N8d").forEach((element) {
+      //print(element.text);
+      fxelementsList.add(element.text);
+    });
+    //final spanTexts =
+    //    spanElements.map((spanElement) => spanElement.text).toList();
     Map<String, dynamic> exchangemapString = {
       "Code": "Exchange",
       "Name": "Exchange",
@@ -303,9 +308,9 @@ class _MyHomePageState extends State<_MyHomePage> {
       "Polarity": "Unused",
       "Banefits": "Unused",
       "Evaluation": "Unused",
-      "Bid": spanTexts[20],
-      "Ask": spanTexts[22],
-      "Change": spanTexts[24]
+      "Bid": fxelementsList[0],
+      "Ask": fxelementsList[1],
+      "Change": fxelementsList[2]
     };
     // オブジェクトをリストに追加
     dataList.add(exchangemapString);
@@ -638,9 +643,9 @@ class _MyHomePageState extends State<_MyHomePage> {
     });
   }
 
- //DateTime _convertToJst(DateTime localTime) {
- //   return localTime.add(const Duration(hours: 9)); // UTC+9 (JST)
- // }
+  //DateTime _convertToJst(DateTime localTime) {
+  //   return localTime.add(const Duration(hours: 9)); // UTC+9 (JST)
+  // }
 
   void _refreshData() {
     setState(() {
@@ -661,6 +666,192 @@ class _MyHomePageState extends State<_MyHomePage> {
       _isMenuOpen = !_isMenuOpen;
     });
     log("isMenuOpen:  $_isMenuOpen");
+  }
+
+  ClipPath stacktitle() => ClipPath(
+        clipper: MyCustomClipper(),
+        child: Container(
+          //margin: EdgeInsets.only(top: 0.0, right: 0.0),
+          padding: const EdgeInsets.only(
+              top: 0.0, left: 20.0, right: 0.0, bottom: 10.0),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.white,
+                Colors.grey.shade800,
+              ],
+            ),
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(10),
+              bottomRight: Radius.circular(10),
+            ),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "Stocks",
+                style: TextStyle(
+                  fontSize: _getFontSize(context),
+                  color: Colors.orange,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(
+                width: 300.0,
+              ),
+              Text("  $formattedDate" /*+ '  ' + now.month.toString()*/,
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold)),
+            ],
+          ),
+        ),
+
+        //_buildFloatingActionButton(),
+      );
+
+  Widget _buildFloatingActionButton() {
+    return Positioned(
+      top: 12.0 + 23.0, // 上からの距離を調整
+      right: 6.0, // 右からの距離を調整
+      child: Column(
+        verticalDirection: VerticalDirection.down,
+        //mainAxisSize: MainAxisSize.min,
+        children: [
+          if (_isMenuOpen) ...[
+            InkWell(
+              onTap: () {
+                log('ClipOval tapped!');
+                _toggleMenu();
+                _refreshSetup(1);
+              },
+              child: ClipOval(
+                child: Container(
+                  width: 44,
+                  height: 44,
+                  color: Colors.grey,
+                  child: const Center(
+                    child: Text(
+                      '1s',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+          if (_isMenuOpen) ...[
+            ClipOval(
+              child: Material(
+                color: Colors.grey, // button color
+                child: InkWell(
+                  splashColor: Colors.red, // inkwell color
+                  child: const SizedBox(
+                      width: 45, height: 45, child: Icon(Icons.timer_10_sharp)),
+                  onTap: () {
+                    _toggleMenu();
+                    _refreshSetup(10);
+                  },
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                log('ClipOval tapped!');
+                _toggleMenu();
+                _refreshSetup(60);
+              },
+              child: ClipOval(
+                child: Container(
+                  width: 45,
+                  height: 45,
+                  color: Colors.grey,
+                  child: const Center(
+                    child: Text(
+                      '60s',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                log('ClipOval tapped!');
+                _toggleMenu();
+                _refreshSetup(300);
+              },
+              child: ClipOval(
+                child: Container(
+                  width: 45,
+                  height: 45,
+                  color: Colors.grey,
+                  child: const Center(
+                    child: Text(
+                      '5m',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                log('ClipOval tapped!');
+                _toggleMenu();
+                _refreshSetup(3600);
+              },
+              child: ClipOval(
+                child: Container(
+                  width: 45,
+                  height: 45,
+                  color: Colors.grey,
+                  child: const Center(
+                    child: Text(
+                      '10m',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+          Tooltip(
+            message: _refreshTimeString,
+            child: ClipOval(
+              child: Material(
+                color: Colors.orange, // button color
+                child: InkWell(
+                  splashColor: Colors.red, // inkwell color
+                  child: const SizedBox(
+                      width: 45, height: 45, child: Icon(Icons.autorenew)),
+                  onTap: () {
+                    _refreshData();
+                  },
+                  onLongPress: () {
+                    _toggleMenu();
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Container stackmarketView(stdstock) => Container(
@@ -1264,148 +1455,6 @@ class _MyHomePageState extends State<_MyHomePage> {
         );
       });
 
-  Widget _buildFloatingActionButton() {
-    return Positioned(
-      top: 34.0, // 下からの距離を調整
-      right: 6.0, // 右からの距離を調整
-      child: Column(
-        verticalDirection: VerticalDirection.down,
-        //mainAxisSize: MainAxisSize.min,
-        children: [
-          if (_isMenuOpen) ...[
-            InkWell(
-              onTap: () {
-                log('ClipOval tapped!');
-                _toggleMenu();
-                _refreshSetup(1);
-              },
-              child: ClipOval(
-                child: Container(
-                  width: 44,
-                  height: 44,
-                  color: Colors.grey,
-                  child: const Center(
-                    child: Text(
-                      '1s',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-          if (_isMenuOpen) ...[
-            ClipOval(
-              child: Material(
-                color: Colors.grey, // button color
-                child: InkWell(
-                  splashColor: Colors.red, // inkwell color
-                  child: const SizedBox(
-                      width: 45, height: 45, child: Icon(Icons.timer_10_sharp)),
-                  onTap: () {
-                    _toggleMenu();
-                    _refreshSetup(10);
-                  },
-                ),
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                log('ClipOval tapped!');
-                _toggleMenu();
-                _refreshSetup(60);
-              },
-              child: ClipOval(
-                child: Container(
-                  width: 45,
-                  height: 45,
-                  color: Colors.grey,
-                  child: const Center(
-                    child: Text(
-                      '60s',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                log('ClipOval tapped!');
-                _toggleMenu();
-                _refreshSetup(300);
-              },
-              child: ClipOval(
-                child: Container(
-                  width: 45,
-                  height: 45,
-                  color: Colors.grey,
-                  child: const Center(
-                    child: Text(
-                      '5m',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                log('ClipOval tapped!');
-                _toggleMenu();
-                _refreshSetup(3600);
-              },
-              child: ClipOval(
-                child: Container(
-                  width: 45,
-                  height: 45,
-                  color: Colors.grey,
-                  child: const Center(
-                    child: Text(
-                      '10m',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-          Tooltip(
-            message: _refreshTimeString,
-            child: ClipOval(
-              child: Material(
-                color: Colors.orange, // button color
-                child: InkWell(
-                  splashColor: Colors.red, // inkwell color
-                  child: const SizedBox(
-                      width: 45, height: 45, child: Icon(Icons.autorenew)),
-                  onTap: () {
-                    _refreshData();
-                  },
-                  onLongPress: () {
-                    _toggleMenu();
-                  },
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1444,50 +1493,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              //GestureDetector(
-                              ClipPath(
-                                clipper: MyCustomClipper(),
-                                child: Container(
-                                    //margin: EdgeInsets.only(top: 0.0, right: 0.0),
-                                    padding: const EdgeInsets.only(
-                                        top: 0.0,
-                                        left: 20.0,
-                                        right: 0.0,
-                                        bottom: 10.0),
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.white,
-                                          Colors.grey.shade800,
-                                        ],
-                                      ),
-                                      borderRadius: const BorderRadius.only(
-                                        topRight: Radius.circular(10),
-                                        bottomRight: Radius.circular(10),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "Stocks",
-                                              style: TextStyle(
-                                                fontSize: _getFontSize(context),
-                                                color: Colors.orange,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    )),
-                              ),
-                              //),
+                              stacktitle(),
                               Container(
                                 margin: stdmargin,
                                 //width: 500,
@@ -1564,16 +1570,6 @@ class _MyHomePageState extends State<_MyHomePage> {
                               ),
                             ]),
                       )),
-                  Positioned(
-                    right: 100.0,
-                    top: 50.0,
-                    child: Text(
-                        "  $formattedDate" /*+ '  ' + now.month.toString()*/,
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold)),
-                  ),
                   _buildFloatingActionButton(),
                 ],
               ),
