@@ -230,6 +230,11 @@ class _MyHomePageState extends State<_MyHomePage> {
     String spanementsList = "";
     const djiurl = 'https://finance.yahoo.co.jp/quote/%5EDJI';
     //final djiresponse = await _fetchStd(djiurl);
+    //ネットワークの許可:
+    //macOSアプリがインターネットにアクセスできるように、macos/Runner/DebugProfile.entitlements ファイルに以下の設定を追加します：
+    //<key>com.apple.security.network.client</key>
+    //<true/>
+    //このファイルが存在しない場合は、プロジェクトの macos/Runner ディレクトリに作成してください。
 
     final uri = Uri.parse(djiurl); // バックエンドのURLをURIオブジェクトに変換
     final djiresponse = await http.get(uri);
