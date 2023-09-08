@@ -227,7 +227,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     List<String> elementsList = [];
     List<String> nkelementsList = [];
     List<String> fxelementsList = [];
-    String spanementsList="";
+    String spanementsList = "";
     const djiurl = 'https://finance.yahoo.co.jp/quote/%5EDJI';
     //final djiresponse = await _fetchStd(djiurl);
 
@@ -331,8 +331,7 @@ class _MyHomePageState extends State<_MyHomePage> {
 
       final spanElements = body.querySelectorAll('span');
       body.querySelectorAll("span._2wsoPtI7").forEach((element) {
-        //print(element.text);
-        spanementsList=(element.text);
+        spanementsList = (element.text);
       });
       final spanTexts =
           spanElements.map((spanElement) => spanElement.text).toList();
@@ -372,7 +371,6 @@ class _MyHomePageState extends State<_MyHomePage> {
 
       // オブジェクトをリストに追加
       dataList.add(mapString);
-      //print(dataList);
     }
     return dataList;
   }
@@ -648,10 +646,6 @@ class _MyHomePageState extends State<_MyHomePage> {
     });
   }
 
-  //DateTime _convertToJst(DateTime localTime) {
-  //   return localTime.add(const Duration(hours: 9)); // UTC+9 (JST)
-  // }
-
   void _refreshData() {
     setState(() {
       log("_refreshData");
@@ -722,13 +716,11 @@ class _MyHomePageState extends State<_MyHomePage> {
           //height: 45,
           child: Row(
             children: [
-              _buildFloatingActionButton(), // ここにメニューアイコンなどのコンテンツを配置
+              _buildFloatingActionButton(),
             ],
           ),
         ),
-      ]
-          // _buildFloatingActionButton();
-          );
+      ]);
 
   Widget _buildFloatingActionButton() {
     return Row(
