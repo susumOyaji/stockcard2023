@@ -12,7 +12,7 @@ class MyCustomClipper extends CustomClipper<Path> {
     log("MyCustomClipper.height_size: ${size.height}");
     path.moveTo(0.0, 0.0); //P0
 
-    path.lineTo(size.width - radius * 3.0, 0.0); //P2
+    path.lineTo(size.width - radius * 4.0, 0.0); //P2
     path.arcToPoint(Offset(size.width - radius, size.height), //P2 to P3
         clockwise: false,
         radius: Radius.circular(radius));

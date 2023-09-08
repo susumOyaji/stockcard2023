@@ -227,6 +227,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     List<String> elementsList = [];
     List<String> nkelementsList = [];
     List<String> fxelementsList = [];
+    String spanementsList="";
     const djiurl = 'https://finance.yahoo.co.jp/quote/%5EDJI';
     //final djiresponse = await _fetchStd(djiurl);
 
@@ -329,6 +330,10 @@ class _MyHomePageState extends State<_MyHomePage> {
       final h1Texts = h1Elements.map((h1Element) => h1Element.text).toList();
 
       final spanElements = body.querySelectorAll('span');
+      body.querySelectorAll("span._2wsoPtI7").forEach((element) {
+        //print(element.text);
+        spanementsList=(element.text);
+      });
       final spanTexts =
           spanElements.map((spanElement) => spanElement.text).toList();
 
@@ -355,7 +360,7 @@ class _MyHomePageState extends State<_MyHomePage> {
           formatter.format(evaluation); //evaluation.toString();
 
       Map<String, dynamic> mapString = {
-        "Code": spanTexts[22],
+        "Code": spanementsList,
         "Name": h1Texts[1],
         "Price": spanTexts[21],
         "Reshio": ddElement, // spanTexts[29],
@@ -668,189 +673,200 @@ class _MyHomePageState extends State<_MyHomePage> {
     log("isMenuOpen:  $_isMenuOpen");
   }
 
-  ClipPath stacktitle() => ClipPath(
-        clipper: MyCustomClipper(),
-        child: Container(
-          //margin: EdgeInsets.only(top: 0.0, right: 0.0),
-          padding: const EdgeInsets.only(
-              top: 0.0, left: 20.0, right: 0.0, bottom: 10.0),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.white,
-                Colors.grey.shade800,
+  Stack stacktitle() => Stack(children: [
+        ClipPath(
+          clipper: MyCustomClipper(),
+          child: Container(
+            //margin: EdgeInsets.only(top: 0.0, right: 0.0),
+            padding: const EdgeInsets.only(
+                top: 0.0, left: 20.0, right: 0.0, bottom: 10.0),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.grey,
+                  Colors.grey.shade800,
+                ],
+              ),
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(10),
+                bottomRight: Radius.circular(10),
+              ),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  "Stocks",
+                  style: TextStyle(
+                    fontSize: _getFontSize(context),
+                    color: Colors.orange,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(
+                  width: 300.0,
+                ),
+                Text("  $formattedDate" /*+ '  ' + now.month.toString()*/,
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold)),
               ],
             ),
-            borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(10),
-              bottomRight: Radius.circular(10),
-            ),
           ),
+        ),
+        Positioned(
+          top: 2.0,
+          right: 0.0,
+          //width: 45,
+          //height: 45,
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                "Stocks",
-                style: TextStyle(
-                  fontSize: _getFontSize(context),
-                  color: Colors.orange,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(
-                width: 300.0,
-              ),
-              Text("  $formattedDate" /*+ '  ' + now.month.toString()*/,
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold)),
+              _buildFloatingActionButton(), // ここにメニューアイコンなどのコンテンツを配置
             ],
           ),
         ),
-
-        //_buildFloatingActionButton(),
-      );
+      ]
+          // _buildFloatingActionButton();
+          );
 
   Widget _buildFloatingActionButton() {
-    return Positioned(
-      top: 12.0 + 23.0, // 上からの距離を調整
-      right: 6.0, // 右からの距離を調整
-      child: Column(
-        verticalDirection: VerticalDirection.down,
-        //mainAxisSize: MainAxisSize.min,
-        children: [
-          if (_isMenuOpen) ...[
-            InkWell(
-              onTap: () {
-                log('ClipOval tapped!');
-                _toggleMenu();
-                _refreshSetup(1);
-              },
-              child: ClipOval(
-                child: Container(
-                  width: 44,
-                  height: 44,
-                  color: Colors.grey,
-                  child: const Center(
-                    child: Text(
-                      '1s',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-          if (_isMenuOpen) ...[
-            ClipOval(
-              child: Material(
-                color: Colors.grey, // button color
-                child: InkWell(
-                  splashColor: Colors.red, // inkwell color
-                  child: const SizedBox(
-                      width: 45, height: 45, child: Icon(Icons.timer_10_sharp)),
-                  onTap: () {
-                    _toggleMenu();
-                    _refreshSetup(10);
-                  },
-                ),
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                log('ClipOval tapped!');
-                _toggleMenu();
-                _refreshSetup(60);
-              },
-              child: ClipOval(
-                child: Container(
-                  width: 45,
-                  height: 45,
-                  color: Colors.grey,
-                  child: const Center(
-                    child: Text(
-                      '60s',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                log('ClipOval tapped!');
-                _toggleMenu();
-                _refreshSetup(300);
-              },
-              child: ClipOval(
-                child: Container(
-                  width: 45,
-                  height: 45,
-                  color: Colors.grey,
-                  child: const Center(
-                    child: Text(
-                      '5m',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                log('ClipOval tapped!');
-                _toggleMenu();
-                _refreshSetup(3600);
-              },
-              child: ClipOval(
-                child: Container(
-                  width: 45,
-                  height: 45,
-                  color: Colors.grey,
-                  child: const Center(
-                    child: Text(
-                      '10m',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-          Tooltip(
-            message: _refreshTimeString,
+    return Row(
+      //verticalDirection: VerticalDirection.down,
+      //mainAxisSize: MainAxisSize.min,
+      children: [
+        if (_isMenuOpen) ...[
+          InkWell(
+            onTap: () {
+              log('ClipOval tapped!');
+              _toggleMenu();
+              _refreshSetup(1);
+            },
             child: ClipOval(
-              child: Material(
-                color: Colors.orange, // button color
-                child: InkWell(
-                  splashColor: Colors.red, // inkwell color
-                  child: const SizedBox(
-                      width: 45, height: 45, child: Icon(Icons.autorenew)),
-                  onTap: () {
-                    _refreshData();
-                  },
-                  onLongPress: () {
-                    _toggleMenu();
-                  },
+              child: Container(
+                width: 44,
+                height: 44,
+                color: Colors.grey,
+                child: const Center(
+                  child: Text(
+                    '1s',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
         ],
-      ),
+        if (_isMenuOpen) ...[
+          ClipOval(
+            child: Material(
+              color: Colors.grey, // button color
+              child: InkWell(
+                splashColor: Colors.red, // inkwell color
+                child: const SizedBox(
+                    width: 45, height: 45, child: Icon(Icons.timer_10_sharp)),
+                onTap: () {
+                  _toggleMenu();
+                  _refreshSetup(10);
+                },
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              log('ClipOval tapped!');
+              _toggleMenu();
+              _refreshSetup(60);
+            },
+            child: ClipOval(
+              child: Container(
+                width: 45,
+                height: 45,
+                color: Colors.grey,
+                child: const Center(
+                  child: Text(
+                    '60s',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              log('ClipOval tapped!');
+              _toggleMenu();
+              _refreshSetup(300);
+            },
+            child: ClipOval(
+              child: Container(
+                width: 45,
+                height: 45,
+                color: Colors.grey,
+                child: const Center(
+                  child: Text(
+                    '5m',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              log('ClipOval tapped!');
+              _toggleMenu();
+              _refreshSetup(3600);
+            },
+            child: ClipOval(
+              child: Container(
+                width: 45,
+                height: 45,
+                color: Colors.grey,
+                child: const Center(
+                  child: Text(
+                    '10m',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15, fontWeight: FontWeight.w700, // 太字に設定
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+        Tooltip(
+          message: _refreshTimeString,
+          //height: 150, // ツールチップの高さを調整
+          //padding: const EdgeInsets.symmetric(horizontal: 50), // ツールチップ内の余白を調整
+          child: ClipOval(
+            child: Material(
+              color: Colors.orange, // button color
+              child: InkWell(
+                splashColor: Colors.red, // inkwell color
+                child: const SizedBox(
+                    width: 45, height: 45, child: Icon(Icons.autorenew)),
+                onTap: () {
+                  _refreshData();
+                },
+                onLongPress: () {
+                  _toggleMenu();
+                },
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -1570,7 +1586,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                               ),
                             ]),
                       )),
-                  _buildFloatingActionButton(),
+                  //_buildFloatingActionButton(),
                 ],
               ),
             );
