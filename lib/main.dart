@@ -50,6 +50,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false, // "DEBUG"を非表示にする
       //title: 'Stock Data',
       theme: ThemeData(
         canvasColor: const Color.fromARGB(255, 10, 10, 10), // ベースカラーを変更する
@@ -298,11 +299,12 @@ class _MyHomePageState extends State<_MyHomePage> {
 
     final body = parser.parse(exchageresponse.body);
 
-    //final spanElements = body.querySelectorAll('span');
     body.querySelectorAll("span._3Pvw_N8d").forEach((element) {
-      //print(element.text);
+      //log(element.text);
       fxelementsList.add(element.text);
     });
+
+   
     //final spanTexts =
     //    spanElements.map((spanElement) => spanElement.text).toList();
     Map<String, dynamic> exchangemapString = {
@@ -314,9 +316,9 @@ class _MyHomePageState extends State<_MyHomePage> {
       "Polarity": "Unused",
       "Banefits": "Unused",
       "Evaluation": "Unused",
-      "Bid": fxelementsList[0],
-      "Ask": fxelementsList[1],
-      "Change": fxelementsList[2]
+      "Bid": fxelementsList.isEmpty ? "Rewriting" :fxelementsList[0],
+      "Ask": fxelementsList.isEmpty ? "Rewriting" :fxelementsList[1],
+      "Change": fxelementsList.isEmpty ? "Rewriting" :fxelementsList[2]
     };
     // オブジェクトをリストに追加
     dataList.add(exchangemapString);
