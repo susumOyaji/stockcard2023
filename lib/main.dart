@@ -294,17 +294,21 @@ class _MyHomePageState extends State<_MyHomePage> {
 
     //Exchange Dollar Yen
     const exchangeurl = 'https://finance.yahoo.co.jp/quote/USDJPY=FX';
+    //const exchangeurl = 'https://fx.minkabu.jp/pair';
     final exchangeuri = Uri.parse(exchangeurl); // バックエンドのURLをURIオブジェクトに変換
     final exchageresponse = await http.get(exchangeuri);
 
     final body = parser.parse(exchageresponse.body);
 
-    body.querySelectorAll("span._3Pvw_N8d").forEach((element) {
+    //<span class="_FxPriceBoardMain__price_1hfca_33">147<!-- -->.<span class="_FxPriceBoardMain__highlight_1hfca_41">80</span>7</span>
+
+    body
+        .querySelectorAll("span._FxPriceBoardMain__price_1hfca_33")
+        .forEach((element) {
       //log(element.text);
       fxelementsList.add(element.text);
     });
 
-   
     //final spanTexts =
     //    spanElements.map((spanElement) => spanElement.text).toList();
     Map<String, dynamic> exchangemapString = {
@@ -316,9 +320,9 @@ class _MyHomePageState extends State<_MyHomePage> {
       "Polarity": "Unused",
       "Banefits": "Unused",
       "Evaluation": "Unused",
-      "Bid": fxelementsList.isEmpty ? "Rewriting" :fxelementsList[0],
-      "Ask": fxelementsList.isEmpty ? "Rewriting" :fxelementsList[1],
-      "Change": fxelementsList.isEmpty ? "Rewriting" :fxelementsList[2]
+      "Bid": fxelementsList.isEmpty ? "Rewriting" : fxelementsList[0],
+      "Ask": fxelementsList.isEmpty ? "Rewriting" : fxelementsList[1],
+      "Change": fxelementsList.isEmpty ? "Rewriting" : fxelementsList[2]
     };
     // オブジェクトをリストに追加
     dataList.add(exchangemapString);
