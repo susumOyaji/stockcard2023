@@ -228,7 +228,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     List<String> elementsList = [];
     List<String> nkelementsList = [];
     List<String> fxelementsList = [];
-    String spanementsList = "";
+    String spanementsCode = "";
     const djiurl = 'https://finance.yahoo.co.jp/quote/%5EDJI';
     //final djiresponse = await _fetchStd(djiurl);
     //ネットワークの許可:
@@ -338,26 +338,28 @@ class _MyHomePageState extends State<_MyHomePage> {
 
       final body = parser.parse(anyresponse.body);
       final h1Elements = body.querySelectorAll('h1');
-      final h1Texts = h1Elements.map((h1Element) => h1Element.text).toList();
+      final h1Texts =
+          h1Elements.map((h1Element) => h1Element.text).toList(); //企業名
 
-      final spanElements = body.querySelectorAll('span');
+      //final spanElements = body.querySelectorAll('span');
       body.querySelectorAll("span._2wsoPtI7").forEach((element) {
-        spanementsList = (element.text);
+        //Code
+        spanementsCode = (element.text);
       });
-      final spanTexts =
-          spanElements.map((spanElement) => spanElement.text).toList();
 
-      // <dd>タグの3階層下にある<span>タグを検出 Reshio
-      final ddTags = body.querySelectorAll('dd');
-      final ddElements = ddTags.map((ddElement) => ddElement.text).toList();
-      int delimiterIndex = ddElements[0].indexOf("(");
-      final ddElement = ddElements[0].substring(0, delimiterIndex);
+      List<String> spanementsList = [];
 
-      String anyfirstChar = spanTexts[28].substring(0, 1);
+      body.querySelectorAll("span._3rXWJKZF").forEach((element) {
+        //log("p: ${element.text}");
+        spanementsList.add(element.text);
+      });
+
+      
+      String anyfirstChar = spanementsList[2].substring(0, 1);
       String anypolarity = anyfirstChar == '-' ? '-' : '+';
 
       int intHolding = stockdataList[i]["Shares"];
-      String price = spanTexts[21].replaceAll('.', '');
+      String price = spanementsList[0].replaceAll('.', '');
 
       int intPrice =
           (price) == '---' ? 0 : int.parse(price.replaceAll(',', ''));
@@ -370,11 +372,11 @@ class _MyHomePageState extends State<_MyHomePage> {
           formatter.format(evaluation); //evaluation.toString();
 
       Map<String, dynamic> mapString = {
-        "Code": spanementsList,
+        "Code": spanementsCode,
         "Name": h1Texts[1],
-        "Price": spanTexts[21],
-        "Reshio": ddElement, // spanTexts[29],
-        "Percent": spanTexts[31],
+        "Price": spanementsList[0], //spanTexts[21],
+        "Reshio": spanementsList[1], //ddElement, // spanTexts[29],
+        "Percent": spanementsList[2], //spanTexts[31],
         "Polarity": anypolarity,
         "Banefits": bBanefits,
         "Evaluation": eEvaluation
