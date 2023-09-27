@@ -301,13 +301,21 @@ class _MyHomePageState extends State<_MyHomePage> {
     final body = parser.parse(exchageresponse.body);
 
     //<span class="_FxPriceBoardMain__price_1hfca_33">147<!-- -->.<span class="_FxPriceBoardMain__highlight_1hfca_41">80</span>7</span>
+    //<span class="_FxPriceBoardMain__price_1w4it_33">149<!-- -->.<span class="_FxPriceBoardMain__highlight_1w4it_41">03</span>4</span>
+    //<dt class="_FxPriceBoardMain__term_1w4it_26">Bid(売値)</dt>
 
     body
-        .querySelectorAll("span._FxPriceBoardMain__price_1hfca_33")
+        .querySelectorAll("dd")
         .forEach((element) {
       //log(element.text);
       fxelementsList.add(element.text);
     });
+   //body
+   //     .querySelectorAll("span._FxPriceBoardMain__price_1hfca_33")
+   //     .forEach((element) {
+      //log(element.text);
+      //fxelementsList.add(element.text);
+   // });
 
     //final spanTexts =
     //    spanElements.map((spanElement) => spanElement.text).toList();
