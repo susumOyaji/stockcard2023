@@ -304,18 +304,16 @@ class _MyHomePageState extends State<_MyHomePage> {
     //<span class="_FxPriceBoardMain__price_1w4it_33">149<!-- -->.<span class="_FxPriceBoardMain__highlight_1w4it_41">03</span>4</span>
     //<dt class="_FxPriceBoardMain__term_1w4it_26">Bid(売値)</dt>
 
-    body
-        .querySelectorAll("dd")
-        .forEach((element) {
+    body.querySelectorAll("dd").forEach((element) {
       //log(element.text);
       fxelementsList.add(element.text);
     });
-   //body
-   //     .querySelectorAll("span._FxPriceBoardMain__price_1hfca_33")
-   //     .forEach((element) {
-      //log(element.text);
-      //fxelementsList.add(element.text);
-   // });
+    //body
+    //     .querySelectorAll("span._FxPriceBoardMain__price_1hfca_33")
+    //     .forEach((element) {
+    //log(element.text);
+    //fxelementsList.add(element.text);
+    // });
 
     //final spanTexts =
     //    spanElements.map((spanElement) => spanElement.text).toList();
@@ -345,7 +343,7 @@ class _MyHomePageState extends State<_MyHomePage> {
       final anyresponse = await http.get(anyuri);
 
       final body = parser.parse(anyresponse.body);
-      final h1Elements = body.querySelectorAll('h1');
+      final h1Elements = body.querySelectorAll('h2');
       final h1Texts =
           h1Elements.map((h1Element) => h1Element.text).toList(); //企業名
 
@@ -362,7 +360,6 @@ class _MyHomePageState extends State<_MyHomePage> {
         spanementsList.add(element.text);
       });
 
-      
       String anyfirstChar = spanementsList[2].substring(0, 1);
       String anypolarity = anyfirstChar == '-' ? '-' : '+';
 
