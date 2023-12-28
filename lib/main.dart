@@ -74,6 +74,7 @@ class _MyHomePageState extends State<_MyHomePage> {
 
   Future<List<Map<String, dynamic>>>? returnMap;
   List<Map<String, dynamic>> stockdataList = [];
+  int autoid=0;
 
   String formattedDate = "";
   String moreHours = "";
@@ -94,6 +95,7 @@ class _MyHomePageState extends State<_MyHomePage> {
   /*
   static List<Map<String, dynamic>> stockdata = [
     {"Code": "6758", "Shares": 200, "Unitprice": 1665},
+    {"Code": "6758", "Shares": 41, "Unitprice": 12944},
     {"Code": "6976", "Shares": 100, "Unitprice": 1801},
     {"Code": "3436", "Shares": 0, "Unitprice": 0},
   ];
@@ -201,6 +203,7 @@ class _MyHomePageState extends State<_MyHomePage> {
   }
 
   Future<void> loadData() async {
+
     setState(() {
       stockdataList = []; //Load Data to init
     });
@@ -209,9 +212,12 @@ class _MyHomePageState extends State<_MyHomePage> {
     String? encodedData = prefs.getString('stockdataList');
     if (encodedData != null) {
       List<dynamic> decodedData = jsonDecode(encodedData);
+   
 
       setState(() {
         stockdataList = decodedData.cast<Map<String, dynamic>>();
+           // デコードされたリストの要素数を取得
+        autoid = decodedData.length;
         //print(stockdataList);
         log('$stockdataList');
         log("All data has been loaded.");
@@ -477,6 +483,7 @@ class _MyHomePageState extends State<_MyHomePage> {
 
                 setState(() {
                   stocknewData = {
+                    'Id': autoid,
                     'Code': int.parse(enteredText),
                     'Shares': int.parse(enteredText2),
                     'Unitprice': int.parse(enteredText3)
@@ -485,6 +492,12 @@ class _MyHomePageState extends State<_MyHomePage> {
                 addData(stocknewData);
                 //loadData();
 
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Anser'),
+              onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
@@ -498,6 +511,17 @@ class _MyHomePageState extends State<_MyHomePage> {
     // IDの重複チェック
     bool isDuplicateId = false;
     int newId = stocknewData["Code"];
+
+    //stockdataList.add(stocknewData);
+
+    // IDで昇順ソート
+    //stockdataList.sort((a, b) => (a["Code"]).compareTo(b["Code"]));
+
+    //await saveData();
+
+    //log('Data added and sorted successfully.');
+
+    
     for (Map<String, dynamic> existingData in stockdataList) {
       int existingId = existingData["Code"];
       if (existingId == newId) {
@@ -506,6 +530,9 @@ class _MyHomePageState extends State<_MyHomePage> {
       }
     }
 
+     
+
+    
     if (!isDuplicateId) {
       // 新しいデータを追加
       stockdataList.add(stocknewData);
@@ -517,8 +544,83 @@ class _MyHomePageState extends State<_MyHomePage> {
 
       log('Data added and sorted successfully.');
     } else {
+      // データが重複している場合のアラート表示
       log('Data with the same ID already exists. Duplicate registration prevented.');
+      
     }
+    
+  }
+
+  Future<bool> showDuplicateDataAlert() async {
+    bool userConfirmed = false;
+
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('重複データ'),
+          content: const Text('同じIDを持つデータが既に存在します。重複登録はできません。続行しますか？'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                userConfirmed = true;
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('キャンセル'),
+            ),
+          ],
+        );
+      },
+    );
+
+    return userConfirmed;
+  }
+
+  void showFirstAlert(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('First Alert'),
+          content: const Text('This is the first alert.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the first alert
+                showSecondAlert(context); // Show the second alert
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showSecondAlert(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Second Alert'),
+          content: const Text('This is the second alert.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the second alert
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void updateStockData(Map<String, dynamic> newData) async {
@@ -1496,7 +1598,7 @@ class _MyHomePageState extends State<_MyHomePage> {
               return Text('${snapshot.error}');
             }
             List<Map<String, dynamic>> stockDataList = snapshot.data!;
-
+            log("AutoID: ${autoid.toString()}");
             var stdstock = stockDataList.sublist(0, 3);
             //var exchang = stockDataList[2];
             var anystock = stockDataList.sublist(3);
@@ -1596,7 +1698,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                               ),
                             ]),
                       )),
-                  //_buildFloatingActionButton(),
+                  //showDuplicateDataAlert()
                 ],
               ),
             );

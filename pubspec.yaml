@@ -35,7 +35,9 @@ dependencies:
   html: ^0.15.0
   shared_preferences: 2.0.15
   flutter_picker: ^2.1.0
+
  
+  
 
 
   # 以下の記述を追加する。
