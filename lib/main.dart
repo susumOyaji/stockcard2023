@@ -74,11 +74,13 @@ class _MyHomePageState extends State<_MyHomePage> {
 
   Future<List<Map<String, dynamic>>>? returnMap;
   List<Map<String, dynamic>> stockdataList = [];
-  int autoid=0;
+  int autoid = 0;
 
   String formattedDate = "";
   String moreHours = "";
 
+  final TextEditingController _textEditingControllerId =
+      TextEditingController();
   final TextEditingController _textEditingController = TextEditingController();
   final TextEditingController _textEditingController2 = TextEditingController();
   final TextEditingController _textEditingController3 = TextEditingController();
@@ -203,7 +205,6 @@ class _MyHomePageState extends State<_MyHomePage> {
   }
 
   Future<void> loadData() async {
-
     setState(() {
       stockdataList = []; //Load Data to init
     });
@@ -212,11 +213,10 @@ class _MyHomePageState extends State<_MyHomePage> {
     String? encodedData = prefs.getString('stockdataList');
     if (encodedData != null) {
       List<dynamic> decodedData = jsonDecode(encodedData);
-   
 
       setState(() {
         stockdataList = decodedData.cast<Map<String, dynamic>>();
-           // デコードされたリストの要素数を取得
+        // デコードされたリストの要素数を取得
         autoid = decodedData.length;
         //print(stockdataList);
         log('$stockdataList');
@@ -340,6 +340,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     dataList.add(exchangemapString);
 
     for (int i = 0; i < stockdataList.length; i++) {
+      log((stockdataList[i]["Id"]).toString());
       log((stockdataList[i]["Code"]).toString());
       final anyurl =
           'https://finance.yahoo.co.jp/quote/${stockdataList[i]["Code"]}.T';
@@ -451,6 +452,10 @@ class _MyHomePageState extends State<_MyHomePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
+                controller: _textEditingControllerId,
+                decoration: const InputDecoration(hintText: 'Id'),
+              ),
+              TextField(
                 controller: _textEditingController,
                 decoration: const InputDecoration(hintText: 'Code'),
               ),
@@ -521,7 +526,6 @@ class _MyHomePageState extends State<_MyHomePage> {
 
     //log('Data added and sorted successfully.');
 
-    
     for (Map<String, dynamic> existingData in stockdataList) {
       int existingId = existingData["Code"];
       if (existingId == newId) {
@@ -530,25 +534,21 @@ class _MyHomePageState extends State<_MyHomePage> {
       }
     }
 
-     
+    //if (!isDuplicateId) {
+    // 新しいデータを追加
+    stockdataList.add(stocknewData);
 
-    
-    if (!isDuplicateId) {
-      // 新しいデータを追加
-      stockdataList.add(stocknewData);
+    // IDで昇順ソート
+    stockdataList.sort((a, b) => (a["Code"]).compareTo(b["Code"]));
 
-      // IDで昇順ソート
-      stockdataList.sort((a, b) => (a["Code"]).compareTo(b["Code"]));
+    await saveData();
 
-      await saveData();
+    log('Data added and sorted successfully.');
+    //} else {
+    // データが重複している場合のアラート表示
+    //  log('Data with the same ID already exists. Duplicate registration prevented.');
 
-      log('Data added and sorted successfully.');
-    } else {
-      // データが重複している場合のアラート表示
-      log('Data with the same ID already exists. Duplicate registration prevented.');
-      
-    }
-    
+    // }
   }
 
   Future<bool> showDuplicateDataAlert() async {
@@ -625,7 +625,7 @@ class _MyHomePageState extends State<_MyHomePage> {
 
   void updateStockData(Map<String, dynamic> newData) async {
     for (int i = 0; i < stockdataList.length; i++) {
-      if (stockdataList[i]['Code'] == newData['Code']) {
+      if (stockdataList[i]['Id'] == newData['Id']) {
         stockdataList[i] = newData;
         saveData();
         break;
@@ -640,6 +640,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        _textEditingControllerId.text = stockdataList[index]['Id'].toString();
         _textEditingController.text = stockdataList[index]['Code'].toString();
         _textEditingController2.text =
             stockdataList[index]['Shares'].toString();
@@ -651,6 +652,10 @@ class _MyHomePageState extends State<_MyHomePage> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              TextField(
+                controller: _textEditingControllerId,
+                decoration: const InputDecoration(hintText: 'Id'),
+              ),
               TextField(
                 controller: _textEditingController,
                 decoration: const InputDecoration(hintText: 'Code'),
@@ -675,12 +680,14 @@ class _MyHomePageState extends State<_MyHomePage> {
             TextButton(
               child: const Text('OK'),
               onPressed: () {
+                String enteredTextId = _textEditingControllerId.text;
                 String enteredText = _textEditingController.text;
                 String enteredText2 = _textEditingController2.text;
                 String enteredText3 = _textEditingController3.text;
 
                 setState(() {
                   stocknewData = {
+                    'Id': int.parse(enteredTextId),
                     'Code': int.parse(enteredText),
                     'Shares': int.parse(enteredText2),
                     'Unitprice': int.parse(enteredText3)
@@ -1689,7 +1696,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                               Container(
                                 margin: stdmargin,
                                 //width: 500,
-                                height: 300,
+                                height: 500,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
                                   color: Colors.black,
