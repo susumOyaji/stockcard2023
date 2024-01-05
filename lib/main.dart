@@ -724,7 +724,8 @@ class _MyHomePageState extends State<_MyHomePage> {
                 onPressed: () {
                   setState(() {
                     stockdataList.removeAt(index);
-                    saveData();
+                    log(stockdataList[index].toString());
+                    //saveData();
                   });
                   Navigator.of(context).pop();
                 },
@@ -1494,6 +1495,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                       _refreshData();
                     },
                     onLongPress: () {
+                      
                       removeData(index);
                       //loadData();
                       _refreshData();
