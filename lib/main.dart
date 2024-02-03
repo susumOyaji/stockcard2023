@@ -16,7 +16,7 @@ import 'dart:io';
 import 'dart:developer';
 
 void main() async {
-  setupWindow(); // サイズを設定
+  //setupWindow(); // サイズを設定
   runApp(const MyApp());
 }
 
