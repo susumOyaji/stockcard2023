@@ -815,7 +815,7 @@ class _MyHomePageState extends State<_MyHomePage> {
               ),
             ),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              //crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   "Stocks",
@@ -825,9 +825,9 @@ class _MyHomePageState extends State<_MyHomePage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(
-                  width: 300.0,
-                ),
+                //const SizedBox(
+                //  width: 100.0,
+                //),
                 Text("  $formattedDate" /*+ '  ' + now.month.toString()*/,
                     style: const TextStyle(
                         color: Colors.black,
@@ -1627,85 +1627,83 @@ class _MyHomePageState extends State<_MyHomePage> {
                       width: MediaQuery.of(context).size.width,
                       color: Colors.black,
                       child: SafeArea(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              stacktitle(),
-                              Container(
-                                margin: stdmargin,
-                                //width: 500,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.black,
-                                ),
-                                child: stackmarketView(stdstock),
-                              ),
-                              Container(
-                                margin: stdmargin,
-                                //width: 500,
-                                height: 110,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.black,
-                                ),
-                                child: stackAssetView(asset),
-                              ),
-                              Container(
-                                  margin: const EdgeInsets.only(
-                                      top: 10.0, right: 10.0, bottom: 0.0),
-                                  padding: const EdgeInsets.all(5.0),
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Colors.black,
-                                        Colors.grey.shade800,
-                                      ],
-                                    ),
-                                    borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(10),
-                                      bottomRight: Radius.circular(10),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    //mainAxisSize: MainAxisSize.max,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        "Please Watch to Comments: ",
-                                        style: TextStyle(
-                                          fontSize: 15.0,
-                                          fontFamily: 'NotoSansJP',
-                                          //fontWeight: FontWeight.w900,
-                                          color: Colors.greenAccent,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Text(
-                                        moreHours,
-                                        style: const TextStyle(
-                                          fontSize: 15.0,
-                                          fontFamily: 'NotoSansJP',
-                                          //fontWeight: FontWeight.w900,
-                                          color: Colors.orangeAccent,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                              Container(
-                                margin: stdmargin,
-                                //width: 500,
-                                height: 500,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.black,
-                                ),
-                                child: listView(anystock),
-                              ),
-                            ]),
+                      child: Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: <Widget>[
+    stacktitle(),
+    Expanded(
+      child: Container(
+        margin: stdmargin,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: Colors.black,
+        ),
+        child: stackmarketView(stdstock),
+      ),
+    ),
+    Expanded(
+      child: Container(
+        margin: stdmargin,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: Colors.black,
+        ),
+        child: stackAssetView(asset),
+      ),
+    ),
+    Container(
+      margin: const EdgeInsets.only(top: 10.0, right: 10.0, bottom: 0.0),
+      padding: const EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Colors.black,
+            Colors.grey.shade800,
+          ],
+        ),
+        borderRadius: const BorderRadius.only(
+          topRight: Radius.circular(10),
+          bottomRight: Radius.circular(10),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text(
+            "Please Watch to Comments: ",
+            style: TextStyle(
+              fontSize: 15.0,
+              fontFamily: 'NotoSansJP',
+              color: Colors.greenAccent,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            moreHours,
+            style: const TextStyle(
+              fontSize: 15.0,
+              fontFamily: 'NotoSansJP',
+              color: Colors.orangeAccent,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    ),
+    Expanded(
+      child: Container(
+        margin: stdmargin,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: Colors.black,
+        ),
+        child: listView(anystock),
+      ),
+    ),
+  ],
+),
+
                       )),
                   //showDuplicateDataAlert()
                 ],
