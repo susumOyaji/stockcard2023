@@ -817,17 +817,19 @@ class _MyHomePageState extends State<_MyHomePage> {
             child: Row(
               //crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  "Stocks",
-                  style: TextStyle(
-                    fontSize: _getFontSize(context),
-                    color: Colors.orange,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Text(
+                    "Stocks",
+                    style: TextStyle(
+                      fontSize: _getFontSize(context),
+                      color: Colors.orange,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
+                  //const SizedBox(
+                  //  width: 100.0,
+                  //),
                 ),
-                //const SizedBox(
-                //  width: 100.0,
-                //),
                 Text("  $formattedDate" /*+ '  ' + now.month.toString()*/,
                     style: const TextStyle(
                         color: Colors.black,
@@ -1495,7 +1497,6 @@ class _MyHomePageState extends State<_MyHomePage> {
                       _refreshData();
                     },
                     onLongPress: () {
-                      
                       removeData(index);
                       //loadData();
                       _refreshData();
@@ -1615,95 +1616,100 @@ class _MyHomePageState extends State<_MyHomePage> {
             return //Column(
                 //children: <Widget>[
                 Container(
-              //width: 280,
-              margin: const EdgeInsets.all(0.0),
-              width: _getContainerWidth(context),
-              height: _getContainerHeight(context),
-              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+              width: 480,
+              //margin: const EdgeInsets.all(0.0),
+              //width: _getContainerWidth(context),
+              //height: _getContainerHeight(context),
+              //padding: const EdgeInsets.only(left: 10.0, right: 10.0),
               child: Stack(
                 children: [
                   Container(
+                     width: 380,
                       padding: const EdgeInsets.all(10),
-                      width: MediaQuery.of(context).size.width,
+                      //width: MediaQuery.of(context).size.width,
                       color: Colors.black,
                       child: SafeArea(
-                      child: Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: <Widget>[
-    stacktitle(),
-    Expanded(
-      child: Container(
-        margin: stdmargin,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          color: Colors.black,
-        ),
-        child: stackmarketView(stdstock),
-      ),
-    ),
-    Expanded(
-      child: Container(
-        margin: stdmargin,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          color: Colors.black,
-        ),
-        child: stackAssetView(asset),
-      ),
-    ),
-    Container(
-      margin: const EdgeInsets.only(top: 10.0, right: 10.0, bottom: 0.0),
-      padding: const EdgeInsets.all(5.0),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Colors.black,
-            Colors.grey.shade800,
-          ],
-        ),
-        borderRadius: const BorderRadius.only(
-          topRight: Radius.circular(10),
-          bottomRight: Radius.circular(10),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Text(
-            "Please Watch to Comments: ",
-            style: TextStyle(
-              fontSize: 15.0,
-              fontFamily: 'NotoSansJP',
-              color: Colors.greenAccent,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            moreHours,
-            style: const TextStyle(
-              fontSize: 15.0,
-              fontFamily: 'NotoSansJP',
-              color: Colors.orangeAccent,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    ),
-    Expanded(
-      child: Container(
-        margin: stdmargin,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          color: Colors.black,
-        ),
-        child: listView(anystock),
-      ),
-    ),
-  ],
-),
-
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            stacktitle(),
+                            Expanded(
+                              child: Container(
+                                margin: stdmargin,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.black,
+                                ),
+                                child: stackmarketView(stdstock),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                margin: stdmargin,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.black,
+                                ),
+                                child: stackAssetView(asset),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(
+                                  top: 10.0, right: 10.0, bottom: 0.0),
+                              padding: const EdgeInsets.all(5.0),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.black,
+                                    Colors.grey.shade800,
+                                  ],
+                                ),
+                                borderRadius: const BorderRadius.only(
+                                  topRight: Radius.circular(10),
+                                  bottomRight: Radius.circular(10),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(child:
+                                  Text(
+                                    "Please Watch to Comments: ",
+                                    style: TextStyle(
+                                      fontSize: 15.0,
+                                      fontFamily: 'NotoSansJP',
+                                      color: Colors.greenAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  ),
+                                  Expanded(child:
+                                  Text(
+                                    moreHours,
+                                    style: const TextStyle(
+                                      fontSize: 15.0,
+                                      fontFamily: 'NotoSansJP',
+                                      color: Colors.orangeAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                              ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                margin: stdmargin,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.black,
+                                ),
+                                child: listView(anystock),
+                              ),
+                            ),
+                          ],
+                        ),
                       )),
                   //showDuplicateDataAlert()
                 ],
