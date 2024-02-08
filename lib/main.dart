@@ -830,11 +830,14 @@ class _MyHomePageState extends State<_MyHomePage> {
                   //  width: 100.0,
                   //),
                 ),
-                Text("  $formattedDate" /*+ '  ' + now.month.toString()*/,
-                    style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold)),
+                Expanded(
+                  child: Text(
+                      "  $formattedDate" /*+ '  ' + now.month.toString()*/,
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold)),
+                ),
               ],
             ),
           ),
@@ -1009,7 +1012,7 @@ class _MyHomePageState extends State<_MyHomePage> {
           children: [
             const Icon(
               Icons.trending_up,
-              size: 42,
+              size: 20,
               color: Colors.grey,
             ),
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -1024,7 +1027,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                   const Text(
                     "Dow Price: \$ ",
                     style: TextStyle(
-                      fontSize: 15.0,
+                      fontSize: 12.0,
                       color: Colors.white,
                       fontFamily: 'NotoSansJP',
                       fontWeight: FontWeight.w900,
@@ -1036,7 +1039,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                         TextSpan(
                           text: '${stdstock[0]['Price']}',
                           style: const TextStyle(
-                            fontSize: 15.0, //fontWeight: FontWeight.bold,
+                            fontSize: 12.0, //fontWeight: FontWeight.bold,
                             fontFamily: 'NotoSansJP',
                             fontWeight: FontWeight.w900,
                             color: Colors.blueAccent,
@@ -1054,7 +1057,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                   const Text(
                     "          The day before ratio: \$ ",
                     style: TextStyle(
-                      fontSize: 15.0,
+                      fontSize: 12.0,
                       color: Colors.white,
                       fontFamily: 'NotoSansJP',
                       fontWeight: FontWeight.w900,
@@ -1067,7 +1070,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                           text:
                               '${stdstock[0]['Reshio'] + "   " + stdstock[0]["Percent"]}',
                           style: TextStyle(
-                            fontSize: 15.0,
+                            fontSize: 12.0,
                             color: stdstock[0]["Polarity"] == '+'
                                 ? Colors.red
                                 : Colors.green,
@@ -1092,7 +1095,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                   const Text(
                     "Nikkey Price: ￥ ",
                     style: TextStyle(
-                      fontSize: 15.0,
+                      fontSize: 12.0,
                       color: Colors.white,
                       fontFamily: 'NotoSansJP',
                       fontWeight: FontWeight.w900,
@@ -1104,7 +1107,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                         TextSpan(
                           text: '${stdstock[1]["Price"]}',
                           style: const TextStyle(
-                            fontSize: 15.0,
+                            fontSize: 12.0,
                             fontFamily: 'NotoSansJP',
                             fontWeight: FontWeight.w900,
                             color: Colors
@@ -1124,7 +1127,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                 const Text(
                   "          The day before ratio: ￥ ",
                   style: TextStyle(
-                    fontSize: 15.0,
+                    fontSize: 12.0,
                     color: Colors.white,
                     fontFamily: 'NotoSansJP',
                     fontWeight: FontWeight.w900,
@@ -1137,7 +1140,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                         text:
                             '${stdstock[1]["Reshio"] + "  " + stdstock[1]["Percent"]}',
                         style: TextStyle(
-                          fontSize: 15.0,
+                          fontSize: 12.0,
                           color: stdstock[1]["Polarity"] == '+'
                               ? Colors.red
                               : Colors.green,
@@ -1149,54 +1152,6 @@ class _MyHomePageState extends State<_MyHomePage> {
                 ),
               ]),
             ]),
-            const SizedBox(
-              width: 50,
-            ),
-            const SizedBox(
-              width: 50,
-              child: Icon(
-                Icons.currency_exchange,
-                size: 35,
-                color: Colors.grey,
-              ),
-            ),
-            SizedBox(
-              //color: Colors.black,
-              width: 150,
-              //height: 200,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Bid: ￥${stdstock[2]["Bid"]}',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.blueAccent,
-                      fontFamily: 'NotoSansJP',
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    'Ask: ￥${stdstock[2]["Ask"]}',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.yellowAccent,
-                      fontFamily: 'NotoSansJP',
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    'Change: ${stdstock[2]["Change"]}',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.redAccent,
-                      fontFamily: 'NotoSansJP',
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ]));
 
   Container stackAssetView(asset) => Container(
@@ -1229,7 +1184,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                       TextSpan(
                         text: 'Market capitalization',
                         style: TextStyle(
-                          fontSize: 35.0,
+                          fontSize: 15.0,
                           color: Colors.grey,
                           fontFamily: 'NotoSansJP',
                           fontWeight: FontWeight.w900,
@@ -1247,7 +1202,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                         const Text(
                           "Market price: ",
                           style: TextStyle(
-                            fontSize: 20.0,
+                            fontSize: 12.0,
                             color: Colors.white,
                             fontFamily: 'NotoSansJP',
                             fontWeight: FontWeight.w900,
@@ -1259,7 +1214,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                               TextSpan(
                                 text: '${asset["Market"]}',
                                 style: TextStyle(
-                                  fontSize: 24.0,
+                                  fontSize: 12.0,
                                   color: asset["Polarity"] == "+"
                                       ? Colors.orange
                                       : Colors.green,
@@ -1276,7 +1231,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                         const SizedBox(width: 10),
                         const Text(
                           "Profit(Gains)",
-                          style: TextStyle(fontSize: 15.0, color: Colors.white),
+                          style: TextStyle(fontSize: 12.0, color: Colors.white),
                         ),
                         RichText(
                           text: TextSpan(
@@ -1284,12 +1239,12 @@ class _MyHomePageState extends State<_MyHomePage> {
                               const TextSpan(
                                 text: "￥",
                                 style: TextStyle(
-                                    fontSize: 15.0, color: Colors.white),
+                                    fontSize: 12.0, color: Colors.white),
                               ),
                               TextSpan(
                                 text: '${asset["Profit"]}',
                                 style: const TextStyle(
-                                    fontSize: 15.0,
+                                    fontSize: 12.0,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white),
                               ),
@@ -1299,7 +1254,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                         const SizedBox(width: 10),
                         const Text(
                           "Investment",
-                          style: TextStyle(fontSize: 15.0, color: Colors.white),
+                          style: TextStyle(fontSize: 12.0, color: Colors.white),
                         ),
                         RichText(
                           text: TextSpan(
@@ -1307,12 +1262,12 @@ class _MyHomePageState extends State<_MyHomePage> {
                               const TextSpan(
                                 text: "￥",
                                 style: TextStyle(
-                                    fontSize: 15.0, color: Colors.white),
+                                    fontSize: 12.0, color: Colors.white),
                               ),
                               TextSpan(
                                 text: '${asset["Invest"]}',
                                 style: const TextStyle(
-                                    fontSize: 15.0,
+                                    fontSize: 12.0,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white),
                               ),
@@ -1340,6 +1295,11 @@ class _MyHomePageState extends State<_MyHomePage> {
           ],
         ),
       );
+
+
+
+
+
 
   Container stackAssetView1(asset) => Container(
         padding: const EdgeInsets.only(top: 5.0),
@@ -1467,12 +1427,13 @@ class _MyHomePageState extends State<_MyHomePage> {
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
           child: Container(
-              margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+            width: (MediaQuery.of(context).size.width),
+              margin: const EdgeInsets.only(top: 10.0),
               padding: const EdgeInsets.all(5.0),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.black,
+                    Colors.white,
                     Colors.grey.shade800,
                   ],
                 ),
@@ -1481,13 +1442,14 @@ class _MyHomePageState extends State<_MyHomePage> {
                 ),
               ),
               child: Row(children: <Widget>[
-                Expanded(
-                  flex: 2,
-                  child: ElevatedButton(
+                //Expanded(
+                //  flex: 2,
+                  //child: 
+                  ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 0, vertical: 0),
-                      fixedSize: const Size(50, 50),
+                      fixedSize: const Size(30, 30),
                       backgroundColor: Colors.purple, //ボタンの背景色
                       shape: const CircleBorder(),
                     ),
@@ -1503,12 +1465,12 @@ class _MyHomePageState extends State<_MyHomePage> {
                     },
                     child: Text("${anystock[index]['Code']}",
                         style: const TextStyle(
-                          fontSize: 15.0,
+                          fontSize: 12.0,
                           color: Colors.black,
                           fontFamily: 'NotoSansJP',
                         )),
                   ),
-                ),
+                //),
 
                 //  ]
                 // ),
@@ -1524,7 +1486,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                       Text(
                         "${anystock[index]["Name"]}",
                         style: const TextStyle(
-                          fontSize: 18.0,
+                          fontSize: 15.0,
                           color: Colors.grey,
                           //fontFamily: 'NoteSansJP',
                           //fontWeight: FontWeight.bold,
@@ -1540,7 +1502,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                           Text("Market: ${anystock[index]["Price"]}",
                               style: const TextStyle(
                                   fontFamily: 'NotoSansJP',
-                                  fontSize: 17.0,
+                                  fontSize: 12.0,
                                   color: Colors.blue),
                               textAlign: TextAlign.left),
                           Text(
@@ -1548,7 +1510,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                             style: const TextStyle(
                                 fontFamily: 'NoteSansJP',
                                 //fontWeight: FontWeight.bold,
-                                fontSize: 17.0,
+                                fontSize: 12.0,
                                 color: Colors.yellow),
                           ),
                         ],
@@ -1558,7 +1520,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                         style: const TextStyle(
                             fontFamily: 'NoteSansJP',
                             //fontWeight: FontWeight.bold,
-                            fontSize: 17.0,
+                            fontSize: 12.0,
                             color: Colors.orange),
                       ),
                     ],
@@ -1572,7 +1534,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                         top: 0.0, right: 0.0, bottom: 0.0, left: 0.0),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        fixedSize: const Size(100, 50),
+                        fixedSize: const Size(50, 20),
                         backgroundColor: anystock[index]["Polarity"] == '+'
                             ? Colors.red
                             : Colors.green,
@@ -1583,7 +1545,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                       child: Text(
                         anystock[index]["Reshio"],
                         style:
-                            const TextStyle(color: Colors.black, fontSize: 20),
+                            const TextStyle(color: Colors.black, fontSize: 10),
                       ),
                       onPressed: () => _refreshData(), //_opneUrl(),
                     ), // 右端のアイコン
@@ -1593,131 +1555,111 @@ class _MyHomePageState extends State<_MyHomePage> {
         );
       });
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: FutureBuilder<List<Map<String, dynamic>>>(
-          future: returnMap,
-          builder: (context, AsyncSnapshot snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.hasError) {
-              return Text('${snapshot.error}');
-            }
-            List<Map<String, dynamic>> stockDataList = snapshot.data!;
-            log("AutoID: ${autoid.toString()}");
+
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: SafeArea(
+      child: FutureBuilder<List<Map<String, dynamic>>>(
+        future: returnMap,
+        builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('${snapshot.error}'),
+            );
+          } else {
+            List<Map<String, dynamic>> stockDataList = snapshot.data ?? [];
             var stdstock = stockDataList.sublist(0, 3);
-            //var exchang = stockDataList[2];
             var anystock = stockDataList.sublist(3);
             var asset = getAsset(anystock);
-            return //Column(
-                //children: <Widget>[
-                Container(
-              width: 480,
-              //margin: const EdgeInsets.all(0.0),
-              //width: _getContainerWidth(context),
-              //height: _getContainerHeight(context),
-              //padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-              child: Stack(
-                children: [
+
+            return Container(
+              padding: const EdgeInsets.all(10),
+              color: Colors.black,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  stacktitle(),
                   Container(
-                     width: 380,
-                      padding: const EdgeInsets.all(10),
-                      //width: MediaQuery.of(context).size.width,
+                    margin: const EdgeInsets.all(5),
+                    height: MediaQuery.of(context).size.height * 0.10,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
                       color: Colors.black,
-                      child: SafeArea(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            stacktitle(),
-                            Expanded(
-                              child: Container(
-                                margin: stdmargin,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.black,
-                                ),
-                                child: stackmarketView(stdstock),
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                margin: stdmargin,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.black,
-                                ),
-                                child: stackAssetView(asset),
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(
-                                  top: 10.0, right: 10.0, bottom: 0.0),
-                              padding: const EdgeInsets.all(5.0),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.black,
-                                    Colors.grey.shade800,
-                                  ],
-                                ),
-                                borderRadius: const BorderRadius.only(
-                                  topRight: Radius.circular(10),
-                                  bottomRight: Radius.circular(10),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(child:
-                                  Text(
-                                    "Please Watch to Comments: ",
-                                    style: TextStyle(
-                                      fontSize: 15.0,
-                                      fontFamily: 'NotoSansJP',
-                                      color: Colors.greenAccent,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  ),
-                                  Expanded(child:
-                                  Text(
-                                    moreHours,
-                                    style: const TextStyle(
-                                      fontSize: 15.0,
-                                      fontFamily: 'NotoSansJP',
-                                      color: Colors.orangeAccent,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                              ),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                margin: stdmargin,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.black,
-                                ),
-                                child: listView(anystock),
-                              ),
-                            ),
-                          ],
+                    ),
+                    child: stackmarketView(stdstock),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.all(10),
+                    height: MediaQuery.of(context).size.width * 0.25,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: Colors.black,
+                    ),
+                    child: stackAssetView(asset),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 10, right: 10, bottom: 0),
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.black, Colors.grey.shade800],
+                      ),
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        bottomRight: Radius.circular(10),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Please Watch to Comments: ",
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            fontFamily: 'NotoSansJP',
+                            color: Colors.greenAccent,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      )),
-                  //showDuplicateDataAlert()
+                        Expanded(
+                          child: Text(
+                            moreHours,
+                            style: const TextStyle(
+                              fontSize: 12.0,
+                              fontFamily: 'NotoSansJP',
+                              color: Colors.orangeAccent,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.black,
+                      ),
+                      child: listView(anystock),
+                    ),
+                  ),
                 ],
               ),
             );
-          },
-        ),
+          }
+        },
       ),
-    );
-  }
+    ),
+  );
+}
+
+
+
 }
