@@ -815,7 +815,6 @@ class _MyHomePageState extends State<_MyHomePage> {
               ),
             ),
             child: Row(
-              //crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                   child: Text(
@@ -826,9 +825,6 @@ class _MyHomePageState extends State<_MyHomePage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  //const SizedBox(
-                  //  width: 100.0,
-                  //),
                 ),
                 Expanded(
                   child: Text(
@@ -843,10 +839,8 @@ class _MyHomePageState extends State<_MyHomePage> {
           ),
         ),
         Positioned(
-          top: 2.0,
-          right: 0.0,
-          //width: 45,
-          //height: 45,
+          top: 1.0,
+          right: 5.5,
           child: Row(
             children: [
               _buildFloatingActionButton(),
@@ -980,7 +974,7 @@ class _MyHomePageState extends State<_MyHomePage> {
               child: InkWell(
                 splashColor: Colors.red, // inkwell color
                 child: const SizedBox(
-                    width: 45, height: 45, child: Icon(Icons.autorenew)),
+                    width: 35, height: 35, child: Icon(Icons.autorenew)),
                 onTap: () {
                   _refreshData();
                 },
@@ -1012,7 +1006,7 @@ class _MyHomePageState extends State<_MyHomePage> {
           children: [
             const Icon(
               Icons.trending_up,
-              size: 20,
+              size: 42,
               color: Colors.grey,
             ),
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -1184,7 +1178,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                       TextSpan(
                         text: 'Market capitalization',
                         style: TextStyle(
-                          fontSize: 15.0,
+                          fontSize: 18.0,
                           color: Colors.grey,
                           fontFamily: 'NotoSansJP',
                           fontWeight: FontWeight.w900,
@@ -1214,7 +1208,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                               TextSpan(
                                 text: '${asset["Market"]}',
                                 style: TextStyle(
-                                  fontSize: 12.0,
+                                  fontSize: 18.0,
                                   color: asset["Polarity"] == "+"
                                       ? Colors.orange
                                       : Colors.green,
@@ -1295,11 +1289,6 @@ class _MyHomePageState extends State<_MyHomePage> {
           ],
         ),
       );
-
-
-
-
-
 
   Container stackAssetView1(asset) => Container(
         padding: const EdgeInsets.only(top: 5.0),
@@ -1427,13 +1416,13 @@ class _MyHomePageState extends State<_MyHomePage> {
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
           child: Container(
-            width: (MediaQuery.of(context).size.width),
+              width: (MediaQuery.of(context).size.width),
               margin: const EdgeInsets.only(top: 10.0),
               padding: const EdgeInsets.all(5.0),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.white,
+                    Colors.black,
                     Colors.grey.shade800,
                   ],
                 ),
@@ -1444,32 +1433,32 @@ class _MyHomePageState extends State<_MyHomePage> {
               child: Row(children: <Widget>[
                 //Expanded(
                 //  flex: 2,
-                  //child: 
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 0, vertical: 0),
-                      fixedSize: const Size(30, 30),
-                      backgroundColor: Colors.purple, //ボタンの背景色
-                      shape: const CircleBorder(),
-                    ),
-                    onPressed: () {
-                      editDialog(index);
-                      //loadData();
-                      _refreshData();
-                    },
-                    onLongPress: () {
-                      removeData(index);
-                      //loadData();
-                      _refreshData();
-                    },
-                    child: Text("${anystock[index]['Code']}",
-                        style: const TextStyle(
-                          fontSize: 12.0,
-                          color: Colors.black,
-                          fontFamily: 'NotoSansJP',
-                        )),
+                //child:
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                    fixedSize: const Size(30, 30),
+                    backgroundColor: Colors.purple, //ボタンの背景色
+                    shape: const CircleBorder(),
                   ),
+                  onPressed: () {
+                    editDialog(index);
+                    //loadData();
+                    _refreshData();
+                  },
+                  onLongPress: () {
+                    removeData(index);
+                    //loadData();
+                    _refreshData();
+                  },
+                  child: Text("${anystock[index]['Code']}",
+                      style: const TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.black,
+                        fontFamily: 'NotoSansJP',
+                      )),
+                ),
                 //),
 
                 //  ]
@@ -1545,7 +1534,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                       child: Text(
                         anystock[index]["Reshio"],
                         style:
-                            const TextStyle(color: Colors.black, fontSize: 10),
+                            const TextStyle(color: Colors.black, fontSize: 15),
                       ),
                       onPressed: () => _refreshData(), //_opneUrl(),
                     ), // 右端のアイコン
@@ -1555,111 +1544,110 @@ class _MyHomePageState extends State<_MyHomePage> {
         );
       });
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: FutureBuilder<List<Map<String, dynamic>>>(
+          future: returnMap,
+          builder:
+              (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('${snapshot.error}'),
+              );
+            } else {
+              List<Map<String, dynamic>> stockDataList = snapshot.data ?? [];
+              var stdstock = stockDataList.sublist(0, 3);
+              var anystock = stockDataList.sublist(3);
+              var asset = getAsset(anystock);
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    body: SafeArea(
-      child: FutureBuilder<List<Map<String, dynamic>>>(
-        future: returnMap,
-        builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('${snapshot.error}'),
-            );
-          } else {
-            List<Map<String, dynamic>> stockDataList = snapshot.data ?? [];
-            var stdstock = stockDataList.sublist(0, 3);
-            var anystock = stockDataList.sublist(3);
-            var asset = getAsset(anystock);
-
-            return Container(
-              padding: const EdgeInsets.all(10),
-              color: Colors.black,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  stacktitle(),
-                  Container(
-                    margin: const EdgeInsets.all(5),
-                    height: MediaQuery.of(context).size.height * 0.10,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: Colors.black,
-                    ),
-                    child: stackmarketView(stdstock),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.all(10),
-                    height: MediaQuery.of(context).size.width * 0.25,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: Colors.black,
-                    ),
-                    child: stackAssetView(asset),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 10, right: 10, bottom: 0),
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Colors.black, Colors.grey.shade800],
+              return Container(
+                  
+                  color: Colors.black,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    //crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      stacktitle(),
+                      Container(
+                        margin: const EdgeInsets.only(top: 5.0),
+                        height: MediaQuery.of(context).size.height * 0.10,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.black,
+                        ),
+                        child: stackmarketView(stdstock),
                       ),
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(10),
-                        bottomRight: Radius.circular(10),
+                      Container(
+                        margin: const EdgeInsets.only(top: 5.0),
+                        height: MediaQuery.of(context).size.height * 0.10,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.black,
+                        ),
+                        child: stackAssetView(asset),
                       ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          "Please Watch to Comments: ",
-                          style: TextStyle(
-                            fontSize: 12.0,
-                            fontFamily: 'NotoSansJP',
-                            color: Colors.greenAccent,
-                            fontWeight: FontWeight.bold,
+                      Container(
+                        margin: const EdgeInsets.only(top: 5.0),
+                        //padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Colors.black, Colors.grey.shade800],
+                          ),
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
                           ),
                         ),
-                        Expanded(
-                          child: Text(
-                            moreHours,
-                            style: const TextStyle(
-                              fontSize: 12.0,
-                              fontFamily: 'NotoSansJP',
-                              color: Colors.orangeAccent,
-                              fontWeight: FontWeight.bold,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "Please Watch to Comments: ",
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                fontFamily: 'NotoSansJP',
+                                color: Colors.greenAccent,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
+                            Expanded(
+                              child: Text(
+                                moreHours,
+                                style: const TextStyle(
+                                  fontSize: 12.0,
+                                  fontFamily: 'NotoSansJP',
+                                  color: Colors.orangeAccent,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      margin: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.black,
                       ),
-                      child: listView(anystock),
-                    ),
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 5.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.black,
+                          ),
+                          child: listView(anystock),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            );
-          }
-        },
+                
+              );
+            }
+          },
+        ),
       ),
-    ),
-  );
-}
-
-
-
+    );
+  }
 }

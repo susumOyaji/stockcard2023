@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import 'dart:developer';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flexible Sizing',
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Flexible Sizing Example'),
+          title: const Text('Flexible Sizing Example'),
         ),
         body: SafeArea(
           child: Center(
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
                   width: MediaQuery.of(context).size.width * 0.5,
                   height: MediaQuery.of(context).size.height * 0.3,
                   color: Colors.green,
-                  child: Center(child: Text('Flexible Size')),
+                  child: const Center(child: Text('Flexible Size')),
                 ),
               ],
             ),
