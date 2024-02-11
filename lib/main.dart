@@ -1547,7 +1547,8 @@ class _MyHomePageState extends State<_MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+        body: SafeArea(
+      child: Center(
         child: FutureBuilder<List<Map<String, dynamic>>>(
           future: returnMap,
           builder:
@@ -1567,87 +1568,85 @@ class _MyHomePageState extends State<_MyHomePage> {
               var asset = getAsset(anystock);
 
               return Container(
-                  
-                  color: Colors.black,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    //crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      stacktitle(),
-                      Container(
-                        margin: const EdgeInsets.only(top: 5.0),
-                        height: MediaQuery.of(context).size.height * 0.10,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: Colors.black,
-                        ),
-                        child: stackmarketView(stdstock),
+                color: Colors.black,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  //crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    stacktitle(),
+                    Container(
+                      margin: const EdgeInsets.only(top: 5.0),
+                      height: MediaQuery.of(context).size.height * 0.10,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.black,
                       ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 5.0),
-                        height: MediaQuery.of(context).size.height * 0.10,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: Colors.black,
-                        ),
-                        child: stackAssetView(asset),
+                      child: stackmarketView(stdstock),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 5.0),
+                      height: MediaQuery.of(context).size.height * 0.10,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.black,
                       ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 5.0),
-                        //padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Colors.black, Colors.grey.shade800],
-                          ),
-                          borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(10),
-                            bottomRight: Radius.circular(10),
-                          ),
+                      child: stackAssetView(asset),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 5.0),
+                      //padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.black, Colors.grey.shade800],
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              "Please Watch to Comments: ",
-                              style: TextStyle(
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "Please Watch to Comments: ",
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              fontFamily: 'NotoSansJP',
+                              color: Colors.greenAccent,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              moreHours,
+                              style: const TextStyle(
                                 fontSize: 12.0,
                                 fontFamily: 'NotoSansJP',
-                                color: Colors.greenAccent,
+                                color: Colors.orangeAccent,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Expanded(
-                              child: Text(
-                                moreHours,
-                                style: const TextStyle(
-                                  fontSize: 12.0,
-                                  fontFamily: 'NotoSansJP',
-                                  color: Colors.orangeAccent,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(top: 5.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.black,
                           ),
-                          child: listView(anystock),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                
+                    ),
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 5.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.black,
+                        ),
+                        child: listView(anystock),
+                      ),
+                    ),
+                  ],
+                ),
               );
             }
           },
         ),
       ),
-    );
+    ));
   }
 }

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class OrientationDemo extends StatelessWidget {
+  const OrientationDemo({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Orientation Demo'),
+        title: const Text('Orientation Demo'),
       ),
       body: OrientationBuilder(
         builder: (context, orientation) {
@@ -18,7 +20,7 @@ class OrientationDemo extends StatelessWidget {
   }
 
   Widget _buildPortraitLayout() {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -37,7 +39,7 @@ class OrientationDemo extends StatelessWidget {
   }
 
   Widget _buildLandscapeLayout() {
-    return Center(
+    return const Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -57,7 +59,7 @@ class OrientationDemo extends StatelessWidget {
 }
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     home: OrientationDemo(),
   ));
 }
