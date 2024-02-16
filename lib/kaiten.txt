@@ -1,0 +1,61 @@
+
+画面の向きを固定する方法:
+画面を縦向きに固定する場合、以下のコードをmain.dartに追加します:
+import 'package:flutter/services.dart';
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]).then((_) {
+    runApp(MyApp());
+  });
+}
+
+
+このコードは、スマートフォンの画面を縦向きに固定します123。
+画面回転に対応する方法:
+スマートフォンとタブレットのレスポンシブ対応を実現するために、以下の方法を試してみてください:
+auto_size_textパッケージを使う
+FittedBoxを使用する
+LayoutBuilderを利用する
+MediaQueryを使う
+flutter_screenutilパッケージを導入する
+例えば、MediaQueryを使って画面幅に応じてフォントサイズを決める方法は以下のようになります:
+
+double screenWidth = MediaQuery.of(context).size.width;
+double large = screenWidth * 0.06;
+double medium = screenWidth * 0.04;
+double small = screenWidth * 0.02;
+
+final largeText = Text("large", style: TextStyle(fontSize: large));
+final mediumText = Text("medium", style: TextStyle(fontSize: medium));
+final smallText = Text("small", style: TextStyle(fontSize: small));
+
+
+また、flutter_screenutilパッケージを使う場合は、以下のようにレスポンシブ対応ができます:
+return ScreenUtilInit(
+  designSize: const Size(360, 690),
+  minTextAdapt: true,
+  splitScreenMode: true,
+  builder: (context, child) {
+    return child!;
+  },
+  child: MaterialApp(
+    title: 'Responsive App Sample',
+    theme: ThemeData(
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      useMaterial3: false,
+    ),
+    home: const ListPage(),
+  ),
+);
+
+フォントサイズの指定時には、.spをつけて指定します:
+Text(
+  "text",
+  style: TextStyle(
+    fontSize: 20.sp,
+  ),
+)

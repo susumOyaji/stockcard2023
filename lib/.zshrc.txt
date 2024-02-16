@@ -1,0 +1,35 @@
+#ハードウェアとしての役割をTerminalが行い、ソフトウェアとしての役割をShellが行なっています。
+#vi ~/.zshrc
+
+
+
+#echo 'export PATH="$PATH:/Users/sumitomoshigeru/development/flutter/bin"' >> ~/.zshrc
+#nano ~/.zshrc  ログインシェル、インタラクティブシェルの場合に読み込まれます。　基本はこれを使えばOK！
+#nano ~/.zshenv ログインシェル、インタラクティブシェル、シェルスクリプト全てに影響を与えます。使用する際は要注意！
+#設定ファイルの読み込み順 zshenv > zprofile > zshrc > zlogin
+
+
+# デフォルトのパスを確認
+% echo $path
+#/usr/local/bin /usr/bin /bin /usr/sbin /sbin /Library/Apple/usr/bin /Library/Frameworks/Mono.framework/Versions/Current/Commands
+
+#パス設定を反映させるには ~/.zshrc を読み込みます。
+source ~/.zshrc
+
+
+## lang
+export LANG=ja_JP.UTF-8
+
+# If you come from bash you might have to change your $PATH.
+#これはパスを追加するための一般的な書式です。
+#指定したディレクトリ（ここでは/Users/sumitomoshigeru/development/flutter/bin）を現在のパスに追加します。
+
+#具体的には、次のことが行われます:
+#export PATH=: 新しいパスを設定することを示します。
+#$PATH: 現在のパスを示します。$PATHは、すでに設定されている他のパスを含んでいます。
+#: パスのセパレータです。複数のパスを区切るために使用されます。
+#/Users/sumitomoshigeru/development/flutter/bin: 新しいパスが追加されるディレクトリのパスです。
+
+export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=$PATH:/Users/sumitomoshigeru/development/flutter/bin
+export PATH=$PATH:/Users/sumitomoshigeru/development/flutter/bin
