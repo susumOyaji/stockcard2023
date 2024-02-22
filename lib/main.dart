@@ -7,13 +7,12 @@ import 'dart:async';
 
 import 'package:html/parser.dart' as parser;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:stockcard2023/clipper.dart';
+import 'clipper.dart';
 //import 'clipper.dart';
 
 import 'package:window_size/window_size.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
-import 'dart:ui';
 import 'dart:developer';
 
 void main() async {
@@ -832,34 +831,31 @@ class _MyHomePageState extends State<_MyHomePage> {
               ),
               Expanded(
                 flex: 1,
-                child: Text(
-                    formattedDate /*+ '  ' + now.month.toString()*/,
+                child: Text(formattedDate /*+ '  ' + now.month.toString()*/,
                     style: const TextStyle(
                         color: Colors.black,
                         fontSize: 15,
                         fontWeight: FontWeight.bold)),
               ),
-              
               Expanded(
                 flex: 2,
-               child:
-              Row(
-                children: [
-                  const ImageIcon(
-                    AssetImage("assets/Exchange.png"), // アセットフォルダ内の画像を指定
-                    size: 48, // アイコンのサイズを設定
-                    color: Colors.greenAccent, // アイコンの色を設定
-                  ),
-                  Text(
-                    "${stdstock[2]["Bid"]}",
-                    style: const TextStyle(
-                      fontSize: 15, //_getFontSize(context),
-                      color: Colors.redAccent,
-                      fontWeight: FontWeight.bold,
+                child: Row(
+                  children: [
+                    const ImageIcon(
+                      AssetImage("assets/Exchange.png"), // アセットフォルダ内の画像を指定
+                      size: 48, // アイコンのサイズを設定
+                      color: Colors.greenAccent, // アイコンの色を設定
                     ),
-                  ),
-                ],
-              ),
+                    Text(
+                      "${stdstock[2]["Bid"]}",
+                      style: const TextStyle(
+                        fontSize: 15, //_getFontSize(context),
+                        color: Colors.redAccent,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -1547,27 +1543,36 @@ class _MyHomePageState extends State<_MyHomePage> {
                 Expanded(
                   flex: 2,
                   child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 0.0, right: 0.0, bottom: 0.0, left: 0.0),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: const Size(50, 20),
-                        backgroundColor: anystock[index]["Polarity"] == '+'
-                            ? Colors.red
-                            : Colors.green,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                      child: Text(
-                        anystock[index]["Reshio"],
-                        style:
-                            const TextStyle(color: Colors.black, fontSize: 15),
-                      ),
-                      onPressed: () => _refreshData(), //_opneUrl(),
-                    ), // 右端のアイコン
+                    padding: const EdgeInsets.all(0.0),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        // ボタンのサイズに応じてフォントサイズを変更
+                        double fontSize = constraints.maxWidth / 6; // 適切な調整が必要です
+                        return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            fixedSize: const Size(60, 20), // ボタンの固定サイズ
+                            backgroundColor: anystock[index]["Polarity"] == '+' ? Colors.red : Colors.green,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          onPressed: () => _refreshData(),
+                          child: Text(
+                            anystock[index]["Reshio"],
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: fontSize,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
+
+
+
+
               ])),
         );
       });
