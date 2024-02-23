@@ -7,8 +7,6 @@ import 'dart:async';
 
 import 'package:html/parser.dart' as parser;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:stockcard2023/ResponsiveLayoutExample.dart';
-import 'package:stockcard2023/Untitled-1.dart';
 import 'package:stockcard2023/Untitled-2.dart';
 import 'clipper.dart';
 //import 'clipper.dart';
