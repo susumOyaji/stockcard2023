@@ -7,6 +7,9 @@ import 'dart:async';
 
 import 'package:html/parser.dart' as parser;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stockcard2023/ResponsiveLayoutExample.dart';
+import 'package:stockcard2023/Untitled-1.dart';
+import 'package:stockcard2023/Untitled-2.dart';
 import 'clipper.dart';
 //import 'clipper.dart';
 
@@ -17,7 +20,7 @@ import 'dart:developer';
 
 void main() async {
   //setupWindow(); // サイズを設定
-  runApp(const MyApp());
+  runApp(const MyApp10());
 }
 
 // サイズを固定
