@@ -1542,37 +1542,38 @@ class _MyHomePageState extends State<_MyHomePage> {
                 //SizedBox(width: 50.0,),
                 Expanded(
                   flex: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.all(0.0),
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        // ボタンのサイズに応じてフォントサイズを変更
-                        double fontSize = constraints.maxWidth / 6; // 適切な調整が必要です
-                        return ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            fixedSize: const Size(60, 20), // ボタンの固定サイズ
-                            backgroundColor: anystock[index]["Polarity"] == '+' ? Colors.red : Colors.green,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
-                          onPressed: () => _refreshData(),
-                          child: Text(
-                            anystock[index]["Reshio"],
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: fontSize,
-                            ),
-                          ),
-                        );
-                      },
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: const Size(60, 20), // ボタンの固定サイズ
+                      backgroundColor: anystock[index]["Polarity"] == '+'
+                          ? Colors.red
+                          : Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
                     ),
+                    onPressed: () {
+                      // ボタンが押された時の処理
+                      _refreshData();
+                    },
+                    //child: Container(
+                    //  width: 300, // ボタンの幅
+                    //  height: 50, // ボタンの高さ
+                    child: Center(
+                      child: Text(
+                        '150', //anystock[index]["Reshio"],
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 
+                              //MediaQuery.of(context).textScaler * 16.0,
+                              MediaQuery.textScalerOf(context).scale(14.0),
+                              //TextScale(context).scale(16),
+                        ),
+                      ),
+                    ),
+                    //),
                   ),
                 ),
-
-
-
-
               ])),
         );
       });
